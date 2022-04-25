@@ -70,7 +70,7 @@ clean_data[["educ"]] <- calculate_demographic_proportions(data, educ)
 mean_cols <- c("nchild", "nchlt5", "uhrswork")
 means <- data %>% 
   group_by(year, statefip) %>% 
-  summarise(across(mean_cols, mean)) %>% 
+  summarise(across(all_of(mean_cols), mean)) %>% 
   ungroup()
 
 colnames(means) <- c("year",
@@ -86,7 +86,7 @@ rm(data, mean_cols, means)
 #### Read and clean Drug Death Data ####
 
 # Fips Mapping
-fips_map <- read_csv(here("data", "raw", "state_fips_map.csv"),
+fips_map <- read_csv(here("data", "mapping", "state_fips_map.csv"),
                      show_col_types = F) %>% 
   clean_names() %>% 
   rename(state = name,
@@ -99,22 +99,23 @@ data <- read_csv(here("data", "raw",
                  show_col_types = F) %>% 
   clean_names() %>% 
   select(state:upper_confidence_limit_for_crude_rate) %>% 
-  left_join(fips_map, by = "state") %>% 
-  mutate(statefip = if_else(state == "District of Columbia", 
-                            11,
-                            statefip))
+  left_join(fips_map, by = "state")
 
 #### Combine All and Export ####
 
 clean_data %>% 
   reduce(left_join, by = c("year", "statefip")) %>% 
   left_join(data, by = c("year", "statefip")) %>% 
-  mutate(pot = if_else(year >= 2012 & statefip == 8, 1, 0)) %>% 
-  select(year, 
-         statefip, 
+  mutate(pot = if_else(year >= year_legalized & year_legalized !=0, 1,0)) %>% 
+  select(year,
+         statefip,
+         state,
+         year_legalized,
          pot,
-         state:upper_confidence_limit_for_crude_rate,
+         ever_legalized,
+         deaths:upper_confidence_limit_for_crude_rate,
          everything()) %>% 
-  write_csv(here("data/clean/clean.csv"))
+  arrange(statefip) %>% 
+  write_csv(here("data", "clean", "clean.csv"))
 
 rm(clean_data, data, fips_map, calculate_demographic_proportions)

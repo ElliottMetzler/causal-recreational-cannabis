@@ -1,0 +1,52 @@
+Name,Postal Code,FIPS,year_legalized,ever_legalized
+Alabama,AL,1,0,0
+Alaska,AK,2,2014,1
+Arizona,AZ,4,0,0
+Arkansas,AR,5,0,0
+California,CA,6,2016,1
+Colorado,CO,8,2012,1
+Connecticut,CT,9,0,0
+Delaware,DE,10,0,0
+District of Columbia,NA,11,0,0
+Florida,FL,12,0,0
+Georgia,GA,13,0,0
+Hawaii,HI,15,0,0
+Idaho,ID,16,0,0
+Illinois,IL,17,0,0
+Indiana,IN,18,0,0
+Iowa,IA,19,0,0
+Kansas,KS,20,0,0
+Kentucky,KY,21,0,0
+Louisiana,LA,22,0,0
+Maine,ME,23,2016,1
+Maryland,MD,24,0,0
+Massachusetts,MA,25,2016,1
+Michigan,MI,26,2018,1
+Minnesota,MN,27,0,0
+Mississippi,MS,28,0,0
+Missouri,MO,29,0,0
+Montana,MT,30,0,0
+Nebraska,NE,31,0,0
+Nevada,NV,32,2016,1
+New Hampshire,NH,33,0,0
+New Jersey,NJ,34,0,0
+New Mexico,NM,35,0,0
+New York,NY,36,0,0
+North Carolina,NC,37,0,0
+North Dakota,ND,38,0,0
+Ohio,OH,39,0,0
+Oklahoma,OK,40,0,0
+Oregon,OR,41,2014,1
+Pennsylvania,PA,42,0,0
+Rhode Island,RI,44,0,0
+South Carolina,SC,45,0,0
+South Dakota,SD,46,0,0
+Tennessee,TN,47,0,0
+Texas,TX,48,0,0
+Utah,UT,49,0,0
+Vermont,VT,50,2018,1
+Virginia,VA,51,0,0
+Washington,WA,53,2012,1
+West Virginia,WV,54,0,0
+Wisconsin,WI,55,0,0
+Wyoming,WY,56,0,0
