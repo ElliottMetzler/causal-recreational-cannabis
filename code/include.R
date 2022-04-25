@@ -31,6 +31,7 @@ librarian::shelf(
   bacondecomp,
   did,
   Synth,
+  tidysynth
 )
 
 
