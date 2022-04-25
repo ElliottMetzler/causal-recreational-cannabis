@@ -59,4 +59,8 @@ out %>% plot_mspe_ratio()
 
 out %>% grab_signficance()
 
-out %>% grab_synthetic_control()
+# Code does same thing as plot_placebos
+out %>% grab_synthetic_control(placebo = T) %>% 
+  mutate(delta =synth_y - real_y) %>% 
+  ggplot +
+  geom_line(aes(x = time_unit, y = delta, color = .id))
