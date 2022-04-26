@@ -5,9 +5,6 @@ rm(list = ls())
 
 df <- read_csv(here("data", "clean", "clean.csv"),
                show_col_types = F) %>% as.data.frame
-state_mapping <- read_csv(here("data", "state_mapping.csv"),
-               show_col_types = F) %>% as.data.frame %>% select(-State, -State_Abbr)
-df <- inner_join(df,state_mapping, by = c("statefip" ="STATEFIP"))
 
 treatment_fip <- 8
 treatment_year <- 2012
@@ -20,8 +17,9 @@ predictors_list <- df %>%
   colnames()
 
 controls_list <- df %>% 
-  select(statefip, Ever_Legalized) %>%
-  filter(statefip != treatment_fip & Ever_Legalized != 1) %>% select(-Ever_Legalized) %>% distinct() %>% pull()
+  filter(statefip != treatment_fip & ever_legalized != 1) %>%
+  distinct(statefip) %>% 
+  pull(statefip)
 
 # Need to double check a few things here
 # Thing 1 - year cut offs throughout (last year before treatment or at treatment?)
