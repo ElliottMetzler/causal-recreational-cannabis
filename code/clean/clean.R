@@ -3,8 +3,8 @@ rm(list = ls())
 
 #### Read and Clean Ipums Data ####
 data <- read_csv(here("data/raw/usa_00005.csv"),
-                  show_col_types = F) %>% 
-  clean_names() %>% 
+                  show_col_types = F) %>%
+  clean_names() %>%
   select(-sample,
          -serial,
          -cbserial,
@@ -17,31 +17,40 @@ data <- read_csv(here("data/raw/usa_00005.csv"),
          -raced,
          -hispand,
          -educd,
-         -empstatd) %>%
+         -empstatd,
+         -ftotinc,
+         -classwkr,
+         -classwkrd,
+         -occ,
+         -citizen,
+         -school) %>%
   mutate(sex = if_else(sex == 1, "male_prop", "female_prop"),
          age = case_when(age < 30 ~ "under_30_prop",
                          age < 50 ~ "under_50_prop",
                          T ~ "over_50_prop"),
-         race = case_when(race == 1 ~ "white_prop", 
+         race = case_when(race == 1 ~ "white_prop",
                           race == 2 ~ "black_prop",
                           race == 3 ~ "american_indian_prop",
                           race == 4 ~ "asian_prop",
                           race == 5 ~ "asian_prop",
                           race == 6 ~ "asian_prop",
                           T ~ "other_race_prop"),
-         marst = 
+         marst =
            case_when(marst == 1 ~ "married_prop",
                      marst == 2 ~ "married_prop",
                      marst == 3 ~ "not_married_prop",
                      marst == 4 ~ "not_married_prop",
                      marst == 5 ~ "not_married_prop",
                      marst == 6 ~ "not_married_prop"),
-         educ = 
+         educ =
            case_when(educ < 6 ~ "less_hs_prop",
                      educ == 6 ~ "hs_prop",
                      educ < 10 ~ "some_college_prop",
                      educ == 10 ~ "college_prop",
-                     educ > 10 ~ "higher_college_prop"))
+                     educ > 10 ~ "higher_college_prop"),
+         empstat =
+           case_when(empstat == 1 ~ "employed_prop",
+                     empstat > 1 ~ "not_employed_prop"))
 
 # Function to calculate demographic proportions and organize wide
 calculate_demographic_proportions <- function(df, type_var) {
@@ -65,23 +74,31 @@ clean_data[["age"]] <- calculate_demographic_proportions(data, age)
 clean_data[["race"]] <- calculate_demographic_proportions(data, race)
 clean_data[["marst"]] <- calculate_demographic_proportions(data, marst)
 clean_data[["educ"]] <- calculate_demographic_proportions(data, educ)
+clean_data[["employment_status"]] <- calculate_demographic_proportions(data, empstat)
+
+# Calculate
 
 # Calculate Means Data
 mean_cols <- c("nchild", "nchlt5", "uhrswork")
 means <- data %>% 
   group_by(year, statefip) %>% 
-  summarise(across(all_of(mean_cols), mean)) %>% 
+  summarise(across(all_of(mean_cols), mean),
+            incwage = median(incwage)) %>% 
   ungroup()
 
 colnames(means) <- c("year",
                      "statefip",
                      "mean_children", 
                      "mean_children_u5", 
-                     "mean_hrs_worked")
+                     "mean_hrs_worked",
+                     "median_income")
 
 clean_data[["means"]] <- means
 
+data2 <- data
+
 rm(data, mean_cols, means)
+
 
 #### Read and clean Drug Death Data ####
 

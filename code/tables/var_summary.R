@@ -13,7 +13,11 @@ summary_groups[["Gender"]] <- c("male_prop", "female_prop")
 summary_groups[["Age"]] <- c("under_30_prop", "under_50_prop", "over_50_prop")
 summary_groups[["Race"]] <- df %>% select(american_indian_prop:white_prop) %>% colnames()
 summary_groups[["marital_status"]] <- c("married_prop", "not_married_prop")
-summary_groups[["Education_and_Work"]] <- df %>% select(college_prop:some_college_prop, mean_hrs_worked) %>% colnames()
+summary_groups[["Education_and_Work"]] <- df %>% 
+  select(college_prop:not_employed_prop, 
+         mean_hrs_worked, 
+         median_income) %>% 
+  colnames()
 summary_groups[["Children"]] <- c("mean_children", "mean_children_u5")
 
 # Need to do: Fix the variable naming in the tables so it looks pretty
