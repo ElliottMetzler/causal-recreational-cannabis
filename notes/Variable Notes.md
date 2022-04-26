@@ -93,6 +93,22 @@ Summarized as follows:
 * 10 ~ college complete
 * Over 10 ~ more than college
 
+### Employment Status (`empstat`)
+Original coding as follows:
+* 0 = N/A
+* 1 = Employed
+* 2 = Unemployed
+* 3 = Not in Labor Force
+
+Summarized as follows:
+We calculate and employment proportion rate as Employed / (Employed + Unemployed + Not in Labor Force). Note that this is not a employment rate or unemployment rate, but is a metric summarizing the employment status of a state.
+
+### (`incwage`)
+https://usa.ipums.org/usa-action/variables/INCWAGE#codes_section
+
+Summarized as follows:
+We calculate the median of this for each state for each year.
+
 ## Ipums Data - To Calculate
 
 ### Hispanic (`hispan`)
@@ -107,51 +123,7 @@ Original coding as follows:
 Summarized as follows:
 Not Currently Done
 
-### Citizen (`citizen`)
-Original coding as follows:
-* 0 = N/A
-* 1 = born abroad of american parents
-* 2 = naturalized citizen
-* 3 = not a citizen
 
-Summarized as follows:
-Not currently done
-
-### School (`school`)
-Original coding as follows:
-* 0 = N/A
-* 1 = No, not in school
-* 2 = Yes, in school
-
-Summarized as follows:
-Not currently done
-
-### Employment Status (`empstat`)
-Original coding as follows:
-* 0 = N/A
-* 1 = Employed
-* 2 = Unemployed
-* 3 = Not in Labor Force
-
-Summarized as follows:
-Not currently done
-
-### Worker Classification (`classwkr`)
-Original coding as follows:
-* 0 = N/A
-* 1 = Self Employed
-* 2 = Works for wages
-
-Summarized as follows:
-Not currently done
-
-
-### (`ftotinc`)
-https://usa.ipums.org/usa-action/variables/FTOTINC#codes_section
-
-
-### (`incwage`)
-https://usa.ipums.org/usa-action/variables/INCWAGE#codes_section
 
 ## Other Data Source
 
