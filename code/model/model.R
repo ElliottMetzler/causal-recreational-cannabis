@@ -1,4 +1,6 @@
+library(SCtools)
 gc()
+
 rm(list = ls())
 
 df <- read_csv(here("data", "clean", "clean.csv"),
@@ -42,5 +44,25 @@ data_prep_out <- dataprep(
 
 synth_out <- synth(data.prep.obj = data_prep_out)
 
-path.plot(synth_out, data_prep_out)
+mean_cdr <- df %>% filter(Ever_Legalized != 1 | state == "Colorado") %>% 
+  group_by(year,Ever_Legalized) %>% 
+  summarise(cdr = mean(crude_death_rate))
+
+ggplot(data = mean_cdr,aes(x = year, y = cdr, group = as.factor(Ever_Legalized), linetype = as.factor(Ever_Legalized)))+
+  geom_line()+
+  geom_vline(xintercept =  2012, linetype = "dashed")+
+  scale_x_continuous()+
+  scale_linetype_discrete(name = "", labels = c("Control States", "Colorado"))+
+  theme_minimal()
+
+path.plot(synth_out, data_prep_out, tr.intake = treatment_year)
 gaps.plot(synth_out, data_prep_out)
+
+placebos <- generate.placebos(data_prep_out, synth_out, Sigf.ipop = 5)
+
+plot_placebos(placebos)
+
+mspe.test(placebos)
+
+mspe.plot(placebos, discard.extreme = TRUE, mspe.limit = 1, plot.hist = TRUE)
+
