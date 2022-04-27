@@ -1,7 +1,7 @@
 gc()
 rm(list = ls())
 
-df <- read_csv(here("data", "clean", "clean.csv"),
+df <- read_csv(here("data", "clean", "clean_2000.csv"),
                show_col_types = F) %>% as.data.frame
 
 out_col <- df %>%
@@ -18,7 +18,7 @@ out_col <- df %>%
     generate_placebos = T) %>% 
   
   # Include all the potential predictors as means
-  generate_predictor(time_window = 2006:2012,
+  generate_predictor(time_window = 2000:2012,
                      across(female_prop:mean_hrs_worked, mean)) %>%
   
   # Add specific predictors for a couple things
@@ -41,7 +41,7 @@ out_col <- df %>%
   #                    cdr_2010 = crude_death_rate) %>%
   
   # Generate Weights
-  generate_weights(optimization_window = 2006:2012,
+  generate_weights(optimization_window = 2000:2012,
                    margin_ipop = 0.02,
                    sigf_ipop = 7,
                    bound_ipop = 6) %>% 
@@ -75,7 +75,7 @@ out_wash <- df %>%
     generate_placebos = T) %>% 
   
   # Include all the potential predictors as means
-  generate_predictor(time_window = 2006:2012,
+  generate_predictor(time_window = 2000:2012,
                      across(female_prop:mean_hrs_worked, mean)) %>%
   
   # Add specific predictors for a couple things
@@ -98,7 +98,7 @@ out_wash <- df %>%
 #                    cdr_2010 = crude_death_rate) %>%
 
 # Generate Weights
-generate_weights(optimization_window = 2006:2012,
+generate_weights(optimization_window = 2000:2012,
                  margin_ipop = 0.02,
                  sigf_ipop = 7,
                  bound_ipop = 6) %>% 
@@ -116,7 +116,6 @@ out_wash %>% plot_mspe_ratio()
 
 out_wash %>% grab_signficance()
 
-ggplot()
 # Code does same thing as plot_placebos
 out %>% grab_synthetic_control(placebo = T) %>% 
   mutate(delta =synth_y - real_y) %>% 

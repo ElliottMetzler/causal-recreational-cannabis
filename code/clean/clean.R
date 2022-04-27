@@ -2,12 +2,12 @@ gc()
 rm(list = ls())
 
 #### Read and Clean Ipums Data ####
-data <- read_csv(here("data/raw/usa_00005.csv"),
+data <- read_csv(here("data/raw/usa_00006.csv.gz"),
                   show_col_types = F) %>%
   clean_names() %>%
   select(-sample,
          -serial,
-         -cbserial,
+         #-cbserial,
          -hhwt,
          -cluster,
          -strata,
@@ -50,7 +50,8 @@ data <- read_csv(here("data/raw/usa_00005.csv"),
                      educ > 10 ~ "higher_college_prop"),
          empstat =
            case_when(empstat == 1 ~ "employed_prop",
-                     empstat > 1 ~ "not_employed_prop"))
+                     empstat > 1 ~ "not_employed_prop")) %>% 
+  filter(incwage != 999999)
 
 # Function to calculate demographic proportions and organize wide
 calculate_demographic_proportions <- function(df, type_var) {
@@ -132,7 +133,8 @@ clean_data %>%
          ever_legalized,
          deaths:upper_confidence_limit_for_crude_rate,
          everything()) %>% 
-  arrange(statefip) %>% 
-  write_csv(here("data", "clean", "clean.csv"))
+  arrange(statefip)  %>% 
+  select(-"NA") %>% 
+  write_csv(here("data", "clean", "clean_2000.csv"))
 
 rm(clean_data, data, fips_map, calculate_demographic_proportions)
