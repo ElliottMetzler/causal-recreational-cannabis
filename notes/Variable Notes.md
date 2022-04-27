@@ -4,19 +4,6 @@
 
 Insert Link to source with explanation of exactly which variables we pulled. Currently organized by what we have already summarized rather than a logical order.
 
-### Gender (`sex`)
-
-Ranges from 1 = Male to 2 = Female
-
-Summarized as proportion of Males and Proportion of Females
-Represented in Percentages
-
-### Age (`age`)
-
-Ranges from 21+
-
-Summarized as proportion of with buckets set as follows:
-Under 30, under 50 (30-50), and over 50
 
 ### Race (`race`)
 

@@ -2,12 +2,29 @@ gc()
 rm(list = ls())
 
 #### Read and Clean Ipums Data ####
+
 data <- read_csv(here("data/raw/usa_00006.csv.gz"),
                   show_col_types = F) %>%
-  clean_names() %>%
+  clean_names() %>% as.data.frame()
+
+#### Get Dimensions of the raw data set ####
+
+print("Dimensions of the Raw IPUMs Data")
+print(data %>% dim())
+print("Dimensions after filtering out 0 for empstat")
+print(data %>% filter(empstat != 0) %>% dim())
+print("Dimensions after filtering out 999999 for incwage")
+print(data %>% filter(empstat != 0, incwage != 999999) %>% dim())
+
+# Thus, we only lose a few entries that are probably weird data. we can drop these
+
+#### Mutate and Summarize IPUMs Data ####
+
+data %<>% 
+  filter(empstat != 0,
+         incwage != 999999) %>% 
   select(-sample,
          -serial,
-         #-cbserial,
          -hhwt,
          -cluster,
          -strata,
@@ -23,7 +40,9 @@ data <- read_csv(here("data/raw/usa_00006.csv.gz"),
          -classwkrd,
          -occ,
          -citizen,
-         -school) %>%
+         -school) 
+
+data %<>%  
   mutate(sex = if_else(sex == 1, "male_prop", "female_prop"),
          age = case_when(age < 30 ~ "under_30_prop",
                          age < 50 ~ "under_50_prop",
@@ -35,6 +54,8 @@ data <- read_csv(here("data/raw/usa_00006.csv.gz"),
                           race == 5 ~ "asian_prop",
                           race == 6 ~ "asian_prop",
                           T ~ "other_race_prop"),
+         hispan = case_when(hispan == 0 ~ "not_hispanic_prop",
+                            hispan > 0 ~ "hispanic_prop"),
          marst =
            case_when(marst == 1 ~ "married_prop",
                      marst == 2 ~ "married_prop",
@@ -43,15 +64,14 @@ data <- read_csv(here("data/raw/usa_00006.csv.gz"),
                      marst == 5 ~ "not_married_prop",
                      marst == 6 ~ "not_married_prop"),
          educ =
-           case_when(educ < 6 ~ "less_hs_prop",
+           case_when(educ < 6 ~ "less_than_hs_prop",
                      educ == 6 ~ "hs_prop",
                      educ < 10 ~ "some_college_prop",
                      educ == 10 ~ "college_prop",
-                     educ > 10 ~ "higher_college_prop"),
+                     educ > 10 ~ "more_than_college_prop"),
          empstat =
            case_when(empstat == 1 ~ "employed_prop",
-                     empstat > 1 ~ "not_employed_prop")) %>% 
-  filter(incwage != 999999)
+                     empstat > 1 ~ "not_employed_prop"))
 
 # Function to calculate demographic proportions and organize wide
 calculate_demographic_proportions <- function(df, type_var) {
@@ -73,6 +93,7 @@ clean_data <- list()
 clean_data[["sex"]] <- calculate_demographic_proportions(data, sex)
 clean_data[["age"]] <- calculate_demographic_proportions(data, age)
 clean_data[["race"]] <- calculate_demographic_proportions(data, race)
+clean_data[["hispan"]] <- calculate_demographic_proportions(data, hispan)
 clean_data[["marst"]] <- calculate_demographic_proportions(data, marst)
 clean_data[["educ"]] <- calculate_demographic_proportions(data, educ)
 clean_data[["employment_status"]] <- calculate_demographic_proportions(data, empstat)
@@ -116,7 +137,7 @@ data <- read_csv(here("data", "raw",
                       "NCHS_-_Drug_Poisoning_Mortality_by_State__United_States.csv"),
                  show_col_types = F) %>% 
   clean_names() %>% 
-  select(state:upper_confidence_limit_for_crude_rate) %>% 
+  select(state:crude_death_rate) %>% 
   left_join(fips_map, by = "state")
 
 #### Combine All and Export ####
@@ -131,10 +152,9 @@ clean_data %>%
          year_legalized,
          pot,
          ever_legalized,
-         deaths:upper_confidence_limit_for_crude_rate,
+         deaths:crude_death_rate,
          everything()) %>% 
-  arrange(statefip)  %>% 
-  select(-"NA") %>% 
+  arrange(statefip)  %>%
   write_csv(here("data", "clean", "clean_2000.csv"))
 
 rm(clean_data, data, fips_map, calculate_demographic_proportions)

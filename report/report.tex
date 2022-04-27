@@ -35,19 +35,42 @@
 
 \begin{abstract}
 
+Can legalizing the recreational use of cannabis reduce rates of drug poisoning deaths? This paper seeks to study the relationship between changes in state-level policy toward recreational cannabis use and drug poisoning death rates. Specifically, we evaluate the impact of such policy change on the first state to legalize, Colorado. We implement a synthetic control design in which we use demographic data for each state in the United States, including Washington D.C., and estimate the causal impact of Colorado's legalization policy shift in 2012. We find [[insert findings and explanation of implications]].
+
 \end{abstract}
 
 \newpage
 
-\section{Introduction}
+\section{Introduction and Background}
 
-\section{Background}
+[[Need to do]]
 
 \input{../tables/rollout.tex}
 
+Figure \ref{fig:death_rates_trend} shows the average death rate across the United States and the average death rate for Colorado between 2000 and 2018.
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=0.85\textwidth]{death_Rates_trend}
+	\end{center}
+	\caption{Drug Poisoning Death Rates Trend (2000-2018)}
+	\label{fig:death_rates_trend}
+\end{figure}
+
 \section{Data}
 
+The data employed for this paper originates from two sources. First, we source data on drug poisoning deaths, population, and an estimate of the crude drug poisoning death rate from the United States Center for Disease Control (``CDC''). Second, we source state-level demographic data from IPUMS USA, which is a database harmonizing, organizing, and structuring data from various population surveys in the United States over time.
+
+The first data set contains summary statistics by state and by year from 1999 to 2018. For each state in each year, the data reports the number of deaths due to drug poisoning, the population, and the ratio of the two previous variables as the crude death rate. Additionally, this data reports an estimate of the standard error for the crude death rate, and a lower and upper confidence interval around the point estimate. In addition to these base estimates, the data originally includes age-adjusted rates with standard errors and confidence intervals and the United State-wide crude death rate and United State-wide age-adjusted death rate. 
+
+From this data set, we focus on the crude death rate for the state and extract this variable along with the state and year variables for data merging purposes. We focus our attention on the crude death rate statistic for a couple of important reasons. First, using the death rate as opposed to the total number of deaths allows us to immediately control for differences in state population when estimating our model. Second, we exclude the age-adjusted rate because our model also accounts for age demographics explicitly as covariates, so it would be inappropriate to use this as our outcome variable of interest.
+
+The second data set contains nearly 28 million entries where each entry represents a person included in [[a survey]] in a particular year.  Importantly, this data includes the year and state in which that entry resided along with extensive demographic data. Thus, we are able to use the groups of these entries associated with each year and each state and calculate demographic summary information representative of each year in each state. We include in our demographic summaries the proportion of the population that is listed as male as compared to female [[should footnote simplicity of coding here ( I don't remember seeing info about non-binary or choose not to identify)]], a summary of a few significant age buckets, proportions of the population based on race, on marital status, on education, and on employment status. Additionally, we summarize the mean number of hours worked, the median income, the mean number of children, and the mean number of children under 5 years old. We present the mean and standard deviation of each of these demographic variables in Table \ref{tab:var_summary}.
+
+To construct our final data set for use in analysis, we combine the two data sources. Since we have summarized the latter data set at the state and year level and the first data set is already at this level, we merge on the state and year. Thus, we have data for each state, inclusive of Washington D.C., for each year between 2000 and 2018 with data on deaths associated with drug poisoning, population, crude death rate, and all of our descriptive demographics data.
+
 \input{../tables/var_summary.tex}
+
+Please see the appendix for detailed descriptions of our procedure to re-code and summarize variables.
 
 \section{Model}
 
@@ -56,6 +79,44 @@
 \section{Conclusion}
 
 \section{Appendix}
+
+\subsection{Variable Re-coding Procedure Detail}
+
+\begin{itemize}
+\item
+Gender ( \emph{sex})
+
+Original coding:
+\begin{itemize}
+\item
+1 = Male
+\item
+2 = Female
+\end{itemize}
+Summarized by calculating proportion of total that is male and proportion of total that is female.
+
+\item
+Age (\emph{age})
+
+Original coding:
+\begin{itemize}
+\item
+Actual age of entry
+\end{itemize}
+Summarized by categorizing into the following age groups and calculating the proportion of the total that fall into that age group.
+\begin{itemize}
+\item
+Under 30 years old
+\item
+Between 30 years old and under 50 years old
+\item
+Over 50 years old
+\end{itemize}
+
+\item
+Need to do - finish transferring notes from the markdown file into here.
+
+\end{itemize}
 
 
 \end{document}
