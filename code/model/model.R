@@ -26,7 +26,6 @@ run_synth_model <- function(state_of_interest) {
     generate_control()
 }
 
-
 # Create Unit Weight Table
 unit_weight_table <- function(synth_model_object,
                               state_of_interest) {
@@ -59,16 +58,22 @@ balance_table <- function(synth_model_object,
   
   synth_model_object %>% 
     grab_balance_table() %>% 
-    kbl(caption = "Balance Table",
-        col.names = c("Variable",
-                      state_of_interest, 
-                      paste0("Synthetic ", state_of_interest),
-                      "Donor Sample"),
-        booktabs = T,
-        format = "latex",
-        label = labels_) %>% 
-    kable_styling(latex_option = c("striped", "HOLD_position")) %>% 
-    write_lines(here(output_))
+    mutate(variable = variable %>% 
+             str_replace_all("_", " ") %>% 
+             str_replace_all("prop", "Proportion") %>%
+             str_to_title(),
+           variable = variable %>% str_replace("Hs", "High School"),
+           across(-variable, ~round(.x,3))) %>%
+  kbl(caption = "Balance Table",
+      col.names = c("Variable",
+                    state_of_interest,
+                    paste0("Synthetic ", state_of_interest),
+                    "Donor Sample"),
+      booktabs = T,
+      format = "latex",
+      label = labels_) %>%
+  kable_styling(latex_option = c("striped", "HOLD_position")) %>%
+  write_lines(here(output_))
 }
 
 
@@ -94,7 +99,7 @@ plot_trends_gen_fig <- function(synth_model_object,
                size = 0.75)
   
   output <- paste0("figures/trends_plot_", tolower(state_of_interest), ".jpg")
-  ggsave(here(output), plot)
+  ggsave(here(output), plot, width = 8, height = 5, units = "in")
 }
 
 # Plot Differences
@@ -121,20 +126,17 @@ plot_diffs_gen_fig <- function(synth_model_object, state_of_interest) {
              label = "Legalization occurs in 2012")
   
   output <- paste0("figures/diffs_plot_", tolower(state_of_interest), ".jpg")
-  ggsave(here(output), plot)
+  ggsave(here(output), plot, width = 8, height = 5, units = "in")
   
 }
 
-# Last one to add is the Ratio Plot Then this is done and I can write it up
-
-rado <- run_synth_model("Colorado")
-
+# MSPE Figure
 plot_mspe_gen_fig <- function(synth_model_object, state_of_interest) {
   plot <- synth_model_object %>% 
     grab_signficance() %>%
     ggplot() +
     geom_col(aes(x = mspe_ratio,
-                 y = fct_reorder(unit_name, mspe_ratio,),
+                 y = fct_reorder(unit_name, mspe_ratio),
                  fill = type)) +
     scale_fill_manual(values = c("grey", "#F8766D")) +
     labs(x = "Postperiod MSPE / Preperiod MSPE",
@@ -143,19 +145,73 @@ plot_mspe_gen_fig <- function(synth_model_object, state_of_interest) {
     theme(legend.position="none")
 
   output <- paste0("figures/mspe_plot_", tolower(state_of_interest), ".jpg")
-  ggsave(here(output), plot)
+  ggsave(here(output), plot, width = 8, height = 6, units = "in")
   
 }
 
-plot_mspe_gen_fig(rado, "Colorado")
+
+# Placebos Figure NEED TO DO
+
+# Generate a list of states where pre-period RMSPE is less than or equal to 
+# 2 times the unit's pre-preiod RMSPE
+get_pruned_placebos_list <- function(model_object) {
+  
+  prune_threshold <- model_object %>% 
+    grab_signficance() %>% 
+    filter(type == "Treated") %>% 
+    pull(pre_mspe) %>% sqrt() * 2
+  
+  model_object %>% 
+    grab_signficance() %>% 
+    mutate(pre_rmspe = pre_mspe %>% sqrt()) %>% 
+    filter(pre_rmspe <= prune_threshold) %>% 
+    pull(unit_name)
+}
+
+plot_placebos_gen_fig <- function(synth_model_object, state_of_interest) {
+  
+  prune_list <- synth_model_object %>% get_pruned_placebos_list()
+  
+  plot_data <- synth_model_object %>% 
+    grab_synthetic_control(placebo = T) %>% 
+    filter(.id %in% prune_list) %>% 
+    mutate(diff = real_y - synth_y)
+  
+  others <- plot_data %>% filter(.placebo == 1)
+  main <- plot_data %>% filter(.placebo == 0)
+  
+  color_manual <- rep("grey", length(prune_list))
+  
+  plot <- ggplot() +
+    geom_line(data = others, 
+              mapping = aes(x = time_unit, y = diff, color = .id),
+              size = 0.75,
+              alpha = 0.5) + 
+    scale_color_manual(values = color_manual) +
+    geom_line(data = main, mapping = aes(x = time_unit, y = diff),
+              color = "#F8766D",
+              size = 1.5) +
+    labs(x = "Year",
+         y = "Difference of Actual and Synthetic") +
+    geom_hline(yintercept = 0,
+               size = 0.75) +
+    geom_vline(xintercept = 2012,
+               linetype = "longdash",
+               size = 0.75) +
+    theme_minimal() +
+    theme(legend.position="none")
+  
+  output <- paste0("figures/placebos_plot_", tolower(state_of_interest), ".jpg")
+  ggsave(here(output), plot, width = 8, height = 6, units = "in")
+}
 
 # Overall runner function
 
 run_model_create_figures <- function(some_state) {
   
-  # Instatiate Model
+  # Instantiate Model
   model_object <- run_synth_model(some_state)
-  
+ 
   # Tables
   unit_weight_table(model_object, some_state)
   balance_table(model_object, some_state)
@@ -164,6 +220,7 @@ run_model_create_figures <- function(some_state) {
   plot_trends_gen_fig(model_object,some_state)
   plot_diffs_gen_fig(model_object, some_state)
   plot_mspe_gen_fig(model_object, some_state)
+  plot_placebos_gen_fig(model_object, some_state)
 
 }
 
