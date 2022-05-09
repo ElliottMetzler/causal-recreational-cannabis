@@ -4,120 +4,138 @@ rm(list = ls())
 df <- read_csv(here("data", "clean", "clean_2000.csv"),
                show_col_types = F) %>% as.data.frame
 
-out_col <- df %>%
-  # Filter out states that legalized pot at some point
-  filter(state == "Colorado" | ever_legalized == 0) %>% 
+#### Functions ####
+
+# Model Runner
+run_synth_model <- function(state_of_interest) {
+  df %>% 
+    filter(state == state_of_interest | ever_legalized == 0) %>% 
+    synthetic_control(
+      outcome = crude_death_rate,
+      unit = state,
+      time = year,
+      i_unit = state_of_interest,
+      i_time = 2012,
+      generate_placebos = T) %>% 
+    generate_predictor(time_window =2000:2012,
+                       across(female_prop:median_income, mean)) %>% 
+    generate_weights(optimization_window = 2000:2012,
+                     margin_ipop = 0.02,
+                     sigf_ipop = 7,
+                     bound_ipop = 6) %>% 
+    generate_control()
+}
+
+
+# Create Unit Weight Table
+unit_weight_table <- function(synth_model_object,
+                              state_of_interest) {
   
-  # Generate synthetic control models
-  synthetic_control(
-    outcome = crude_death_rate,
-    unit = state,
-    time = year,
-    i_unit = "Colorado",
-    i_time = 2012,
-    generate_placebos = T) %>% 
+  labels_ <- paste0("unit_weight_table_", tolower(state_of_interest))
+  output_ <- paste0("tables/", labels_, ".tex")
+    
+  synth_model_object %>% 
+    grab_unit_weights() %>% 
+    kbl(caption = "Synthetic Weights",
+        col.names = c("Unit", "Weight"),
+        booktabs = T,
+        format = "latex",
+        label = labels_) %>% 
+    kable_styling(latex_option = c("striped", "HOLD_position")) %>% 
+    write_lines(here(output_))
+}
+
+# Create Balance Table
+balance_table <- function(synth_model_object,
+                          state_of_interest) {
   
-  # Include all the potential predictors as means
-  generate_predictor(time_window = 2000:2012,
-                     across(female_prop:mean_hrs_worked, mean)) %>%
+  labels_ <- paste0("balance_table_", tolower(state_of_interest))
+  output_ <- paste0("tables/", labels_, ".tex")
   
-  # Add specific predictors for a couple things
-  # generate_predictor(time_window = 2008,
-  #                    under_30_prop_2008 = under_30_prop) %>%
-  # generate_predictor(time_window = 2010,
-  #                    under_30_prop_2010 = under_30_prop) %>%
-  # 
-  # generate_predictor(time_window = 2008,
-  #                    black_prop_2008 = black_prop) %>%
-  # generate_predictor(time_window = 2010,
-  #                    black_prop_2010 = black_prop) %>%
+  synth_model_object %>% 
+    grab_balance_table() %>% 
+    kbl(caption = "Balance Table",
+        col.names = c("Variable",
+                      state_of_interest, 
+                      paste0("Synthetic ", state_of_interest),
+                      "Donor Sample"),
+        booktabs = T,
+        format = "latex",
+        label = labels_) %>% 
+    kable_styling(latex_option = c("striped", "HOLD_position")) %>% 
+    write_lines(here(output_))
+}
 
-  # Add lagged predictors
-  # generate_predictor(time_window = 2008,
-  #                    cdr_2008 = crude_death_rate) %>% 
-  # generate_predictor(time_window = 2009,
-  #                    cdr_2009 = crude_death_rate) %>% 
-  # generate_predictor(time_window = 2010,
-  #                    cdr_2010 = crude_death_rate) %>%
+
+# Plot Trends
+
+plot_trends_gen_fig <- function(synth_model_object,
+                                state_of_interest) {
+  plot <- synth_model_object %>% 
+    grab_synthetic_control() %>% 
+    pivot_longer(cols = c("real_y", "synth_y")) %>% 
+    mutate(name = if_else(name == "real_y", 
+                          state_of_interest,
+                          paste0("Synthetic ", state_of_interest))) %>% 
+    ggplot() + 
+    geom_line(aes(x = time_unit, y = value, color = name),
+              size = 1.5) +
+    theme_minimal() +
+    labs(x = "Year", 
+         y = "Crude Death Rate",
+         color = "") +
+    geom_vline(xintercept = 2012,
+               linetype = "longdash",
+               size = 0.75)
   
-  # Generate Weights
-  generate_weights(optimization_window = 2000:2012,
-                   margin_ipop = 0.02,
-                   sigf_ipop = 7,
-                   bound_ipop = 6) %>% 
+  output <- paste0("figures/trends_plot_", tolower(state_of_interest), ".jpg")
+  ggsave(here(output), plot)
+}
+
+# Plot Differences
+
+plot_diffs_gen_fig <- function(synth_model_object, state_of_interest) {
+  plot <- synth_model_object %>%
+    grab_synthetic_control() %>% 
+    mutate(diff = real_y - synth_y) %>% 
+    ggplot() + 
+    geom_line(aes(x = time_unit, y = diff),
+              color = "#F8766D",
+              size = 1.5) +
+    theme_minimal() +
+    labs(x = "Year",
+         y = "Difference of Actual and Synthetic") +
+    geom_hline(yintercept = 0,
+               size = 0.75) +
+    geom_vline(xintercept = 2012,
+               linetype = "longdash",
+               size = 0.75) + 
+    annotate("text",
+             x = 2009,
+             y = -10,
+             label = "Legalization occurs in 2012")
   
-  generate_control()
-
-out_col %>% plot_trends()
-out_col %>% plot_differences()
-out_col %>% plot_weights()
-
-out_col %>% grab_balance_table()
-
-out_col %>% plot_placebos()
-out_col %>% plot_mspe_ratio()
-
-out_col %>% grab_signficance()
-
-
-#Same synthetic control code using Washington as the treated state
-out_wash <- df %>%
-  # Filter out states that legalized pot at some point
-  filter(state == "Washington" | ever_legalized == 0) %>% 
+  output <- paste0("figures/diffs_plot_", tolower(state_of_interest), ".jpg")
+  ggsave(here(output), plot)
   
-  # Generate synthetic control models
-  synthetic_control(
-    outcome = crude_death_rate,
-    unit = state,
-    time = year,
-    i_unit = "Washington",
-    i_time = 2012,
-    generate_placebos = T) %>% 
+}
+
+# Last one to add is the Ratio Plot Then this is done and I can write it up
+
+# Overall runner function
+
+run_model_create_figures <- function(some_state) {
   
-  # Include all the potential predictors as means
-  generate_predictor(time_window = 2000:2012,
-                     across(female_prop:mean_hrs_worked, mean)) %>%
-  
-  # Add specific predictors for a couple things
-  # generate_predictor(time_window = 2008,
-  #                    under_30_prop_2008 = under_30_prop) %>%
-  # generate_predictor(time_window = 2010,
-  #                    under_30_prop_2010 = under_30_prop) %>%
-  # 
-  # generate_predictor(time_window = 2008,
-  #                    black_prop_2008 = black_prop) %>%
-  # generate_predictor(time_window = 2010,
-  #                    black_prop_2010 = black_prop) %>%
+  model_object <- run_synth_model(some_state)
+  unit_weight_table(model_object, some_state)
+  balance_table(model_object, some_state)
+  plot_trends_gen_fig(model_object,some_state)
+  plot_diffs_gen_fig(model_object, some_state)
 
-# Add lagged predictors
-# generate_predictor(time_window = 2008,
-#                    cdr_2008 = crude_death_rate) %>% 
-# generate_predictor(time_window = 2009,
-#                    cdr_2009 = crude_death_rate) %>% 
-# generate_predictor(time_window = 2010,
-#                    cdr_2010 = crude_death_rate) %>%
+}
 
-# Generate Weights
-generate_weights(optimization_window = 2000:2012,
-                 margin_ipop = 0.02,
-                 sigf_ipop = 7,
-                 bound_ipop = 6) %>% 
-  
-  generate_control()
 
-out_wash %>% plot_trends()
-out_wash %>% plot_differences()
-out_wash %>% plot_weights()
+#### Generate Outputs ####
 
-out_wash %>% grab_balance_table()
-
-out_wash %>% plot_placebos()
-out_wash %>% plot_mspe_ratio()
-
-out_wash %>% grab_signficance()
-
-# Code does same thing as plot_placebos
-out %>% grab_synthetic_control(placebo = T) %>% 
-  mutate(delta =synth_y - real_y) %>% 
-  ggplot +
-  geom_line(aes(x = time_unit, y = delta, color = .id))
+run_model_create_figures("Colorado")
+run_model_create_figures("Washington")
