@@ -6,7 +6,7 @@ df <- read_csv(here("data", "clean", "clean_2000.csv"),
 
 #### Functions ####
 
-# Model Runner
+# Model
 run_synth_model <- function(state_of_interest) {
   df %>% 
     filter(state == state_of_interest | ever_legalized == 0) %>% 
@@ -36,14 +36,19 @@ unit_weight_table <- function(synth_model_object,
     
   synth_model_object %>% 
     grab_unit_weights() %>% 
+    arrange(weight %>% desc) %>% 
+    mutate(weight = weight %>% round(3)) %>% 
+    filter(weight > 0.001) %>%
     kbl(caption = "Synthetic Weights",
         col.names = c("Unit", "Weight"),
         booktabs = T,
         format = "latex",
-        label = labels_) %>% 
-    kable_styling(latex_option = c("striped", "HOLD_position")) %>% 
+        label = labels_) %>%
+    add_footnote("Table excludes donor states with 0.1 percent model weight.") %>% 
+    kable_styling(latex_option = c("striped", "HOLD_position")) %>%
     write_lines(here(output_))
 }
+
 
 # Create Balance Table
 balance_table <- function(synth_model_object,
@@ -122,15 +127,43 @@ plot_diffs_gen_fig <- function(synth_model_object, state_of_interest) {
 
 # Last one to add is the Ratio Plot Then this is done and I can write it up
 
+rado <- run_synth_model("Colorado")
+
+plot_mspe_gen_fig <- function(synth_model_object, state_of_interest) {
+  plot <- synth_model_object %>% 
+    grab_signficance() %>%
+    ggplot() +
+    geom_col(aes(x = mspe_ratio,
+                 y = fct_reorder(unit_name, mspe_ratio,),
+                 fill = type)) +
+    scale_fill_manual(values = c("grey", "#F8766D")) +
+    labs(x = "Postperiod MSPE / Preperiod MSPE",
+         y = "State") +
+    theme_minimal() +
+    theme(legend.position="none")
+
+  output <- paste0("figures/mspe_plot_", tolower(state_of_interest), ".jpg")
+  ggsave(here(output), plot)
+  
+}
+
+plot_mspe_gen_fig(rado, "Colorado")
+
 # Overall runner function
 
 run_model_create_figures <- function(some_state) {
   
+  # Instatiate Model
   model_object <- run_synth_model(some_state)
+  
+  # Tables
   unit_weight_table(model_object, some_state)
   balance_table(model_object, some_state)
+  
+  # Figures
   plot_trends_gen_fig(model_object,some_state)
   plot_diffs_gen_fig(model_object, some_state)
+  plot_mspe_gen_fig(model_object, some_state)
 
 }
 
