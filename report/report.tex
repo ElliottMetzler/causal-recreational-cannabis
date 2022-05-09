@@ -48,9 +48,10 @@ Can legalizing the recreational use of cannabis reduce rates of drug poisoning d
 \input{../tables/rollout.tex}
 
 Figure \ref{fig:death_rates_trend} shows the average death rate across the United States and the average death rate for Colorado between 2000 and 2018.
+
 \begin{figure}[H]
 	\begin{center}
-		\includegraphics[width=0.85\textwidth]{death_Rates_trend}
+		\includegraphics[width=0.85\textwidth]{death_rates_trend}
 	\end{center}
 	\caption{Drug Poisoning Death Rates Trend (2000-2018)}
 	\label{fig:death_rates_trend}
@@ -73,6 +74,7 @@ To construct our final data set for use in analysis, we combine the two data sou
 Please see the appendix for detailed descriptions of our procedure to re-code and summarize variables.
 
 \section{Methodology}
+
 We utilize the synthetic control method first developed by Abadie and Gardeazabal (2003) and then expanded upon in Abadie et. al (2010)(2015). Similar to Abadie et. al (2010) we are analyzing the impact of a government policy shock. In this analysis we are estimating the impact of Colorado's legalization of recreation cannabis in 2012. For our synthetic control, Colorado is the treatment state of interest, and we have a donor pool of 41[Need to double check that's correct] states. The synthetic control method [MORE INFO HERE]
 
 Suppose that we have $1,2...S+1$ states and let $s = 1$ be the treated state, additionally we have $t = 1,2...T$ time periods where $T_0$ represents the number of pretreatment periods, and $T_0 + 1...T$ are the posttreatment periods. With that let $Y_{st}$ be the crude death rate for state $s$ at time $t$. In a posttreatment time line we are estimating
@@ -86,6 +88,36 @@ $w^{*}_s$ is a vector of optimally chosen weights for states from our donor pool
 $X_1$ is a $(K \times 1)$ vector of state population variables and $X_0$ is a $(K \times S)$ matrix of state population variables for $S$ donor states. Note that $w_s \geq 0$ and $\sum w_s = 1$.
 
 We utilize the weights generated to create a synthetic Colorado, where we examine the counterfactual of a Colorado that never legalized recreational cannabis. Additionally we follow Abadie (2010) and use their placebo technique as a robustness check. The placebo technique consists of assigning each state in our donor pool as the treated state and then creating an optimal $w^{*}_s$, from the other donor states as well as the treated state, in the pretreatment period. Utilizing the weights we calculate the posttreatment root mean squared prediction error (RMSPE) for each state. We then take a ratio between the post/pretreatment RMSPE for each state. We expect this value to be high for our treated state, which would suggest that the posttreatment RMSPE is large due to the differences between the synthetic and the observed Colorado.
+
+\input{../tables/unit_weight_table_colorado.tex}
+
+\input{../tables/balance_table_colorado.tex}
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=0.85\textwidth]{trends_plot_colorado}
+	\end{center}
+	\caption{Trends in Crude Death Rate: Colorado vs. Synthetic Colorado}
+	\label{fig:trends_plot_colorado}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=0.85\textwidth]{diffs_plot_colorado}
+	\end{center}
+	\caption{Differences in Crude Death Rate}
+	\label{fig:diffs_plot_colorado}
+\end{figure}
+
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=0.85\textwidth]{mspe_plot_colorado}
+	\end{center}
+	\caption{Differences in Crude Death Rate}
+	\label{fig:mspe_plot_colorado}
+\end{figure}
+
 
 \section{Discussion}
 

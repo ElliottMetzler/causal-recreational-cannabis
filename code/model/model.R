@@ -1,68 +1,174 @@
-library(SCtools)
 gc()
-
 rm(list = ls())
 
-df <- read_csv(here("data", "clean", "clean.csv"),
+df <- read_csv(here("data", "clean", "clean_2000.csv"),
                show_col_types = F) %>% as.data.frame
 
-treatment_fip <- 8
-treatment_year <- 2012
-last_pretreat_year <- treatment_year - 1
-data_start <- min(df$year)
-data_end <- max(df$year)
+#### Functions ####
 
-predictors_list <- df %>% 
-  select(female_prop:mean_hrs_worked) %>% 
-  colnames()
+# Model
+run_synth_model <- function(state_of_interest) {
+  df %>% 
+    filter(state == state_of_interest | ever_legalized == 0) %>% 
+    synthetic_control(
+      outcome = crude_death_rate,
+      unit = state,
+      time = year,
+      i_unit = state_of_interest,
+      i_time = 2012,
+      generate_placebos = T) %>% 
+    generate_predictor(time_window =2000:2012,
+                       across(female_prop:median_income, mean)) %>% 
+    generate_weights(optimization_window = 2000:2012,
+                     margin_ipop = 0.02,
+                     sigf_ipop = 7,
+                     bound_ipop = 6) %>% 
+    generate_control()
+}
 
-controls_list <- df %>% 
-  filter(statefip != treatment_fip & ever_legalized != 1) %>%
-  distinct(statefip) %>% 
-  pull(statefip)
 
-# Need to double check a few things here
-# Thing 1 - year cut offs throughout (last year before treatment or at treatment?)
-# Thing 2 - how to decide between normal predictors and special predictors
-# Thing 3 - what is the mean summary thing doing?
+# Create Unit Weight Table
+unit_weight_table <- function(synth_model_object,
+                              state_of_interest) {
+  
+  labels_ <- paste0("unit_weight_table_", tolower(state_of_interest))
+  output_ <- paste0("tables/", labels_, ".tex")
+    
+  synth_model_object %>% 
+    grab_unit_weights() %>% 
+    arrange(weight %>% desc) %>% 
+    mutate(weight = weight %>% round(3)) %>% 
+    filter(weight > 0.001) %>%
+    kbl(caption = "Synthetic Weights",
+        col.names = c("Unit", "Weight"),
+        booktabs = T,
+        format = "latex",
+        label = labels_) %>%
+    add_footnote("Table excludes donor states with 0.1 percent model weight.") %>% 
+    kable_styling(latex_option = c("striped", "HOLD_position")) %>%
+    write_lines(here(output_))
+}
 
-data_prep_out <- dataprep(
-  foo = df,
-  predictors = predictors_list,
-  predictors.op = "mean",
-  time.predictors.prior = data_start:last_pretreat_year,
-  # special.predictors = ,
-  dependent = "crude_death_rate",
-  unit.variable = "statefip",
-  unit.names.variable = "state",
-  time.variable = "year",
-  treatment.identifier = treatment_fip,
-  controls.identifier = controls_list,
-  time.optimize.ssr = data_start:last_pretreat_year,
-  time.plot = data_start:data_end
-)
 
-synth_out <- synth(data.prep.obj = data_prep_out)
+# Create Balance Table
+balance_table <- function(synth_model_object,
+                          state_of_interest) {
+  
+  labels_ <- paste0("balance_table_", tolower(state_of_interest))
+  output_ <- paste0("tables/", labels_, ".tex")
+  
+  synth_model_object %>% 
+    grab_balance_table() %>% 
+    kbl(caption = "Balance Table",
+        col.names = c("Variable",
+                      state_of_interest, 
+                      paste0("Synthetic ", state_of_interest),
+                      "Donor Sample"),
+        booktabs = T,
+        format = "latex",
+        label = labels_) %>% 
+    kable_styling(latex_option = c("striped", "HOLD_position")) %>% 
+    write_lines(here(output_))
+}
 
-mean_cdr <- df %>% filter(Ever_Legalized != 1 | state == "Colorado") %>% 
-  group_by(year,Ever_Legalized) %>% 
-  summarise(cdr = mean(crude_death_rate))
 
-ggplot(data = mean_cdr,aes(x = year, y = cdr, group = as.factor(Ever_Legalized), linetype = as.factor(Ever_Legalized)))+
-  geom_line()+
-  geom_vline(xintercept =  2012, linetype = "dashed")+
-  scale_x_continuous()+
-  scale_linetype_discrete(name = "", labels = c("Control States", "Colorado"))+
-  theme_minimal()
+# Plot Trends
 
-path.plot(synth_out, data_prep_out, tr.intake = treatment_year)
-gaps.plot(synth_out, data_prep_out)
+plot_trends_gen_fig <- function(synth_model_object,
+                                state_of_interest) {
+  plot <- synth_model_object %>% 
+    grab_synthetic_control() %>% 
+    pivot_longer(cols = c("real_y", "synth_y")) %>% 
+    mutate(name = if_else(name == "real_y", 
+                          state_of_interest,
+                          paste0("Synthetic ", state_of_interest))) %>% 
+    ggplot() + 
+    geom_line(aes(x = time_unit, y = value, color = name),
+              size = 1.5) +
+    theme_minimal() +
+    labs(x = "Year", 
+         y = "Crude Death Rate",
+         color = "") +
+    geom_vline(xintercept = 2012,
+               linetype = "longdash",
+               size = 0.75)
+  
+  output <- paste0("figures/trends_plot_", tolower(state_of_interest), ".jpg")
+  ggsave(here(output), plot)
+}
 
-placebos <- generate.placebos(data_prep_out, synth_out, Sigf.ipop = 5)
+# Plot Differences
 
-plot_placebos(placebos)
+plot_diffs_gen_fig <- function(synth_model_object, state_of_interest) {
+  plot <- synth_model_object %>%
+    grab_synthetic_control() %>% 
+    mutate(diff = real_y - synth_y) %>% 
+    ggplot() + 
+    geom_line(aes(x = time_unit, y = diff),
+              color = "#F8766D",
+              size = 1.5) +
+    theme_minimal() +
+    labs(x = "Year",
+         y = "Difference of Actual and Synthetic") +
+    geom_hline(yintercept = 0,
+               size = 0.75) +
+    geom_vline(xintercept = 2012,
+               linetype = "longdash",
+               size = 0.75) + 
+    annotate("text",
+             x = 2009,
+             y = -10,
+             label = "Legalization occurs in 2012")
+  
+  output <- paste0("figures/diffs_plot_", tolower(state_of_interest), ".jpg")
+  ggsave(here(output), plot)
+  
+}
 
-mspe.test(placebos)
+# Last one to add is the Ratio Plot Then this is done and I can write it up
 
-mspe.plot(placebos, discard.extreme = TRUE, mspe.limit = 1, plot.hist = TRUE)
+rado <- run_synth_model("Colorado")
 
+plot_mspe_gen_fig <- function(synth_model_object, state_of_interest) {
+  plot <- synth_model_object %>% 
+    grab_signficance() %>%
+    ggplot() +
+    geom_col(aes(x = mspe_ratio,
+                 y = fct_reorder(unit_name, mspe_ratio,),
+                 fill = type)) +
+    scale_fill_manual(values = c("grey", "#F8766D")) +
+    labs(x = "Postperiod MSPE / Preperiod MSPE",
+         y = "State") +
+    theme_minimal() +
+    theme(legend.position="none")
+
+  output <- paste0("figures/mspe_plot_", tolower(state_of_interest), ".jpg")
+  ggsave(here(output), plot)
+  
+}
+
+plot_mspe_gen_fig(rado, "Colorado")
+
+# Overall runner function
+
+run_model_create_figures <- function(some_state) {
+  
+  # Instatiate Model
+  model_object <- run_synth_model(some_state)
+  
+  # Tables
+  unit_weight_table(model_object, some_state)
+  balance_table(model_object, some_state)
+  
+  # Figures
+  plot_trends_gen_fig(model_object,some_state)
+  plot_diffs_gen_fig(model_object, some_state)
+  plot_mspe_gen_fig(model_object, some_state)
+
+}
+
+
+#### Generate Outputs ####
+
+run_model_create_figures("Colorado")
+run_model_create_figures("Washington")
