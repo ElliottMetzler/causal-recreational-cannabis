@@ -27,7 +27,7 @@
 }
 
 \author{Patrick Massey and Elliott Metzler}
-\title{Gummies for Good? Doobies against Death?}
+\title{Causal Recreational Cannabis}
 \date{5/13/2022}
 
 \begin{document}
@@ -35,7 +35,7 @@
 
 \begin{abstract}
 
-Can legalizing the recreational use of cannabis reduce rates of drug poisoning deaths? This paper seeks to study the relationship between changes in state-level policy toward recreational cannabis use and drug poisoning death rates. Specifically, we evaluate the impact of such policy change on the first state to legalize, Colorado. We implement a synthetic control design in which we use demographic data for each state in the United States, including Washington D.C., and estimate the causal impact of Colorado's legalization policy shift in 2012. We find [[insert findings and explanation of implications]].
+Can legalizing the recreational use of cannabis reduce rates of drug poisoning deaths? This paper seeks to study the relationship between changes in state-level policy toward recreational cannabis use and drug poisoning death rates. Specifically, we evaluate the impact of such policy change on the first state to legalize, Colorado. We implement a synthetic control design in which we use demographic data for each state in the United States, including Washington D.C., and estimate the causal impact of Colorado's legalization policy shift in 2012. We find a significant decline in drug poisoning death rate between from around 3.8 to 10.9 [[deaths per 100,000]] depending on when measuring after treatment.
 
 \end{abstract}
 
@@ -169,11 +169,17 @@ Additionally, we recognize that our findings carry some important limitations. O
 
 \section{Appendix - Robustness check with Washington}
 
-
+First, we present the donor unit weights for the Synthetic Washington in Table \ref{tab:unit_weight_table_washington}.
 
 \input{../tables/unit_weight_table_washington.tex}
 
+We see that Synthetic Washington is comprised of seven donor states with more than 0.1 percent contribution. Three donor states stand out with over 20 percent contribution: Florida, Utah, and Connecticut. Additionally, we see three of the key states overlap with donor states for Synthetic Colorado: Arizona, Washington D.C. (District of Columbia), and Utah. Though New Hampshire carries the second largest weight for Synthetic Colorado, it is absent from the key donors list for Washington.
+
+Next, we present the analogous balance table as \ref{tab:balance_table_washington}. [[Insert something else here]]
+
 \input{../tables/balance_table_washington.tex}
+
+When looking to the pair of trend and difference charts for Washington, we see a similar picture as we found for Colorado. Where the Synthetic Washington and Synthetic Colorado increase sharply after the treatment in 2012, the actual Washington and Colorado level off.
 
 \begin{figure}[H]
 	\begin{center}
@@ -183,6 +189,8 @@ Additionally, we recognize that our findings carry some important limitations. O
 	\label{fig:trends_plot_washington}
 \end{figure}
 
+This leveling off is further highlighted in the difference chart, where we see a notable negative gap.
+
 \begin{figure}[H]
 	\begin{center}
 		\includegraphics[width=0.85\textwidth]{diffs_plot_washington}
@@ -191,7 +199,11 @@ Additionally, we recognize that our findings carry some important limitations. O
 	\label{fig:diffs_plot_washington}
 \end{figure}
 
+To summarize our ultimate causal estimates, we present a table analogous to \ref{tab:causal_est_table_colorado} as \ref{tab:causal_est_table_washington}. We see that in the years following legalization we estimate a negative causal impact of treatment. Though the results for Washington are not as large in order of magnitude as Colorado, it is encouraging for our model that we estimate a similar results path and same signed outcomes.
+
 \input{../tables/causal_est_table_washington.tex}
+
+Finally, we present the analogous MSPE ratio plot and placebos plot for Washington. Unlike Colorado, Washington's ratio of post-treatment MSPE to pre-treatment MSPE stands well apart from the placebos. 
 
 \begin{figure}[H]
 	\begin{center}
@@ -200,6 +212,8 @@ Additionally, we recognize that our findings carry some important limitations. O
 	\caption{MSPE Ratio Plot}
 	\label{fig:mspe_plot_washington}
 \end{figure}
+
+We note that in the plot of differences between actual and synthetic for the placebos, we see that when our model is applied to Washington we qualitatively find a lower fit quality. Indeed, only a small handful of placebo states fit the pruning criteria in our Washington model, as compared to nearly half of the states  passing the pruning in our Colorado model.
 
 \begin{figure}[H]
 	\begin{center}
