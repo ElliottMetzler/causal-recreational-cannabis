@@ -3,6 +3,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+\usepackage{makecell}
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{colortbl}
@@ -113,7 +114,7 @@ We now plot the observed Colorado versus our synthetic Colorado in Figure \ref{f
 	\begin{center}
 		\includegraphics[width=0.85\textwidth]{trends_plot_colorado}
 	\end{center}
-	\caption{Trends in Crude Death Rate: Colorado vs. Synthetic Colorado}
+	\caption{Trends in Drug Poisoning Death Rate: Colorado vs. Synthetic Colorado}
 	\label{fig:trends_plot_colorado}
 \end{figure}
 
@@ -123,7 +124,7 @@ In Figure \ref{fig:diffs_plot_colorado} we plot the gap between the synthetic an
 	\begin{center}
 		\includegraphics[width=0.85\textwidth]{diffs_plot_colorado}
 	\end{center}
-	\caption{Differences in Crude Death Rate}
+	\caption{Differences in Drug Poisoning Death Rate}
 	\label{fig:diffs_plot_colorado}
 \end{figure}
 
@@ -139,7 +140,7 @@ In Figure \ref{fig:mspe_plot_colorado} below we plot the ratio between the post-
 	\begin{center}
 		\includegraphics[width=0.85\textwidth]{mspe_plot_colorado}
 	\end{center}
-	\caption{MSPE Ratio Plot}
+	\caption{Mean Squared Prediction Error Ratio Plot - Colorado}
 	\label{fig:mspe_plot_colorado}
 \end{figure}
 
@@ -149,7 +150,7 @@ As a robustness check we perform the placebo test as suggested by Abadie et al. 
 	\begin{center}
 		\includegraphics[width=0.85\textwidth]{placebos_plot_colorado}
 	\end{center}
-	\caption{Placebos Plot}
+	\caption{Placebo Analysis Plot - Colorado}
 	\label{fig:placebos_plot_colorado}
 \end{figure}
 
@@ -185,7 +186,7 @@ When looking to the pair of trend and difference charts for Washington, we see a
 	\begin{center}
 		\includegraphics[width=0.85\textwidth]{trends_plot_washington}
 	\end{center}
-	\caption{Trends in Crude Death Rate: Colorado vs. Synthetic Washington}
+	\caption{Trends in Drug Poisoning Death Rate: Washington vs. Synthetic Washington}
 	\label{fig:trends_plot_washington}
 \end{figure}
 
@@ -195,7 +196,7 @@ This leveling off is further highlighted in the difference chart, where we see a
 	\begin{center}
 		\includegraphics[width=0.85\textwidth]{diffs_plot_washington}
 	\end{center}
-	\caption{Differences in Crude Death Rate}
+	\caption{Differences in Drug Poisoning Death Rate}
 	\label{fig:diffs_plot_washington}
 \end{figure}
 
@@ -209,7 +210,7 @@ Finally, we present the analogous MSPE ratio plot and placebos plot for Washingt
 	\begin{center}
 		\includegraphics[width=0.85\textwidth]{mspe_plot_washington}
 	\end{center}
-	\caption{MSPE Ratio Plot}
+	\caption{Mean Squared Prediction Error Ratio Plot- Washington}
 	\label{fig:mspe_plot_washington}
 \end{figure}
 
@@ -219,7 +220,7 @@ We note that in the plot of differences between actual and synthetic for the pla
 	\begin{center}
 		\includegraphics[width=0.85\textwidth]{placebos_plot_washington}
 	\end{center}
-	\caption{Placebos Plot}
+	\caption{Placebo Analysis Plot - Washington}
 	\label{fig:placebos_plot_washington}
 \end{figure}
 

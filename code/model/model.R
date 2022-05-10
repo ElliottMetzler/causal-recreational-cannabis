@@ -38,7 +38,9 @@ unit_weight_table <- function(synth_model_object,
     arrange(weight %>% desc) %>% 
     mutate(weight = weight %>% round(3)) %>% 
     filter(weight > 0.001) %>%
-    kbl(caption = "Synthetic Weights",
+    kbl(caption = paste0("Synthetic ",
+                         state_of_interest,
+                         " Donor State Weights"),
         col.names = c("Unit", "Weight"),
         booktabs = T,
         format = "latex",
@@ -64,7 +66,9 @@ balance_table <- function(synth_model_object,
              str_to_title(),
            variable = variable %>% str_replace("Hs", "High School"),
            across(-variable, ~round(.x,3))) %>%
-  kbl(caption = "Balance Table",
+  kbl(caption = paste0("Synthetic ",
+                       state_of_interest,
+                       " Predictor Variable Balance Summary"),
       col.names = c("Variable",
                     state_of_interest,
                     paste0("Synthetic ", state_of_interest),
@@ -217,15 +221,19 @@ causal_est_table <- function(synth_model_object, state_of_interest) {
     mutate(diff = real_y - synth_y,
            time_unit = time_unit - 2012,
            across(real_y:diff, ~round(.x,3))) %>%
-    kbl(caption = paste0("Estimated Impact of Legalization on Death Rate: ",
+    kable(caption = paste0("Estimated Impact of Legalization on 
+                         Drug Poisoning Death Rate: ",
                          state_of_interest),
         col.names = c("Years After Legalization",
-                      "Real Death Rate",
-                      "Synthetic Death Rate",
+                      "Actual",
+                      "Synthetic",
                       "Estimated Causal Effect"),
         booktabs = T,
         format = "latex",
-        label = labels_) %>% 
+        label = labels_) %>%
+    column_spec(1:4, width = "1in") %>% 
+    add_header_above(c("",
+                       "Drug Poisoning Death Rate" = 3)) %>% 
     kable_styling(latex_option = c("striped", "HOLD_position")) %>% 
     write_lines(here(output_))
   
@@ -237,7 +245,7 @@ run_model_create_figures <- function(some_state) {
   
   # Instantiate Model
   model_object <- run_synth_model(some_state)
- 
+  
   # Tables
   unit_weight_table(model_object, some_state)
   balance_table(model_object, some_state)
