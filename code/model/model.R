@@ -43,7 +43,7 @@ unit_weight_table <- function(synth_model_object,
         booktabs = T,
         format = "latex",
         label = labels_) %>%
-    add_footnote("Table excludes donor states with 0.1 percent model weight.") %>% 
+    add_footnote("Table excludes donor states with less than 0.1 percent model weight.") %>% 
     kable_styling(latex_option = c("striped", "HOLD_position")) %>%
     write_lines(here(output_))
 }
@@ -149,11 +149,8 @@ plot_mspe_gen_fig <- function(synth_model_object, state_of_interest) {
   
 }
 
-
-# Placebos Figure NEED TO DO
-
 # Generate a list of states where pre-period RMSPE is less than or equal to 
-# 2 times the unit's pre-preiod RMSPE
+# 2 times the unit's pre-period RMSPE
 get_pruned_placebos_list <- function(model_object) {
   
   prune_threshold <- model_object %>% 
@@ -168,6 +165,7 @@ get_pruned_placebos_list <- function(model_object) {
     pull(unit_name)
 }
 
+# Plot Placebos Function
 plot_placebos_gen_fig <- function(synth_model_object, state_of_interest) {
   
   prune_list <- synth_model_object %>% get_pruned_placebos_list()
@@ -179,14 +177,14 @@ plot_placebos_gen_fig <- function(synth_model_object, state_of_interest) {
   
   others <- plot_data %>% filter(.placebo == 1)
   main <- plot_data %>% filter(.placebo == 0)
-  
+
   color_manual <- rep("grey", length(prune_list))
-  
+
   plot <- ggplot() +
-    geom_line(data = others, 
+    geom_line(data = others,
               mapping = aes(x = time_unit, y = diff, color = .id),
               size = 0.75,
-              alpha = 0.5) + 
+              alpha = 0.5) +
     scale_color_manual(values = color_manual) +
     geom_line(data = main, mapping = aes(x = time_unit, y = diff),
               color = "#F8766D",
@@ -200,9 +198,37 @@ plot_placebos_gen_fig <- function(synth_model_object, state_of_interest) {
                size = 0.75) +
     theme_minimal() +
     theme(legend.position="none")
-  
+
   output <- paste0("figures/placebos_plot_", tolower(state_of_interest), ".jpg")
   ggsave(here(output), plot, width = 8, height = 6, units = "in")
+}
+
+# Causal Estimate Table
+causal_est_table <- function(synth_model_object, state_of_interest) {
+  
+  labels_ <- paste0("causal_est_table_", tolower(state_of_interest))
+  output_ <- paste0("tables/", labels_, ".tex")
+  
+  
+  synth_model_object %>% 
+    grab_synthetic_control() %>% 
+    filter(time_unit > 2012,
+           time_unit %% 2 == 0) %>% 
+    mutate(diff = real_y - synth_y,
+           time_unit = time_unit - 2012,
+           across(real_y:diff, ~round(.x,3))) %>%
+    kbl(caption = paste0("Estimated Impact of Legalization on Death Rate: ",
+                         state_of_interest),
+        col.names = c("Years After Legalization",
+                      "Real Death Rate",
+                      "Synthetic Death Rate",
+                      "Estimated Causal Effect"),
+        booktabs = T,
+        format = "latex",
+        label = labels_) %>% 
+    kable_styling(latex_option = c("striped", "HOLD_position")) %>% 
+    write_lines(here(output_))
+  
 }
 
 # Overall runner function
@@ -221,10 +247,13 @@ run_model_create_figures <- function(some_state) {
   plot_diffs_gen_fig(model_object, some_state)
   plot_mspe_gen_fig(model_object, some_state)
   plot_placebos_gen_fig(model_object, some_state)
+  
+  # Causal Table
+  causal_est_table(model_object, some_state)
 
 }
 
-
+  
 #### Generate Outputs ####
 
 run_model_create_figures("Colorado")
