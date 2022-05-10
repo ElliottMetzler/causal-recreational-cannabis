@@ -139,7 +139,7 @@ plot_mspe_gen_fig <- function(synth_model_object, state_of_interest) {
                  y = fct_reorder(unit_name, mspe_ratio),
                  fill = type)) +
     scale_fill_manual(values = c("grey", "#F8766D")) +
-    labs(x = "Postperiod MSPE / Preperiod MSPE",
+    labs(x = "Postperiod RMSPE / Preperiod RMSPE",
          y = "State") +
     theme_minimal() +
     theme(legend.position="none")
