@@ -1,0 +1,236 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+{ National Center for Health Statistics}%
+}{%
+{ National Center for Health Statistics}%
+}{%
+{\protect \APACyear {2019}}%
+}]{%
+cdc}
+\APACinsertmetastar {%
+cdc}%
+\begin{APACrefauthors}%
+{ National Center for Health Statistics}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2019}{}{}.
+\newblock
+\APACrefbtitle {NCHS - Drug Poisoning Mortality by State: United States.} {Nchs
+  - drug poisoning mortality by state: United states.}
+\newblock
+\APACrefnote{data retrieved from: CDC, \url{https://data.cdc.gov/d/44rk-q6r2.}}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Abadie%
+, Diamond%
+\BCBL {}\ \BBA {} Hainmueller%
+}{%
+Abadie%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2010}}%
+}]{%
+AbadieAlberto2010SCMf}
+\APACinsertmetastar {%
+AbadieAlberto2010SCMf}%
+\begin{APACrefauthors}%
+Abadie, A.%
+, Diamond, A.%
+\BCBL {}\ \BBA {} Hainmueller, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2010}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Synthetic Control Methods for Comparative Case Studies:
+  Estimating the Effect of California's Tobacco Control Program} {Synthetic
+  control methods for comparative case studies: Estimating the effect of
+  california's tobacco control program}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of the American Statistical
+  Association}{105}{490}{493-505}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Abadie%
+, Diamond%
+\BCBL {}\ \BBA {} Hainmueller%
+}{%
+Abadie%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2015}}%
+}]{%
+AbadieAlberto2015CPat}
+\APACinsertmetastar {%
+AbadieAlberto2015CPat}%
+\begin{APACrefauthors}%
+Abadie, A.%
+, Diamond, A.%
+\BCBL {}\ \BBA {} Hainmueller, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2015}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Comparative Politics and the Synthetic Control Method}
+  {Comparative politics and the synthetic control method}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{American journal of political science}{59}{2}{495-510}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Abadie%
+\ \BBA {} Gardeazabal%
+}{%
+Abadie%
+\ \BBA {} Gardeazabal%
+}{%
+{\protect \APACyear {2003}}%
+}]{%
+AbadieA2003TECo}
+\APACinsertmetastar {%
+AbadieA2003TECo}%
+\begin{APACrefauthors}%
+Abadie, A.%
+\BCBT {}\ \BBA {} Gardeazabal, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2003}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The Economic Costs of Conflict: A Case Study of the
+  Basque Country} {The economic costs of conflict: A case study of the basque
+  country}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The American economic review}{93}{1}{113-132}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Ben-Michael%
+, Feller%
+\BCBL {}\ \BBA {} Rothstein%
+}{%
+Ben-Michael%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2021}}%
+}]{%
+aug-synth}
+\APACinsertmetastar {%
+aug-synth}%
+\begin{APACrefauthors}%
+Ben-Michael, E.%
+, Feller, A.%
+\BCBL {}\ \BBA {} Rothstein, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The Augmented Synthetic Control Method} {The augmented
+  synthetic control method}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of the American Statistical
+  Association}{116}{536}{1789-1803}.
+\newblock
+\begin{APACrefURL} \url{https://doi.org/10.1080/01621459.2021.1929245}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{10.1080/01621459.2021.1929245} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Livingston%
+, Barnett%
+, Delcher%
+\BCBL {}\ \BBA {} Wagenaar%
+}{%
+Livingston%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2017}}%
+}]{%
+LivingstonMelvinD2017RCLa}
+\APACinsertmetastar {%
+LivingstonMelvinD2017RCLa}%
+\begin{APACrefauthors}%
+Livingston, M\BPBI D.%
+, Barnett, T\BPBI E.%
+, Delcher, C.%
+\BCBL {}\ \BBA {} Wagenaar, A\BPBI C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2017}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Recreational Cannabis Legalization and Opioid-Related
+  Deaths in Colorado, 2000-2015} {Recreational cannabis legalization and
+  opioid-related deaths in colorado, 2000-2015}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{American journal of public health
+  (1971)}{107}{11}{1827-1829}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Ruggles%
+\ \protect \BOthers {.}}{%
+Ruggles%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2021}}%
+}]{%
+ipums}
+\APACinsertmetastar {%
+ipums}%
+\begin{APACrefauthors}%
+Ruggles, S.%
+, Flood, S.%
+, Foster, S.%
+, Goeken, R.%
+, Pacas, J.%
+, Schouweiler, M.%
+\BCBL {}\ \BBA {} Sobek, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+\APACrefbtitle {IPUMS USA: Version 11.0 [dataset]. Minneapolis, MN: IPUMS.}
+  {Ipums usa: Version 11.0 [dataset]. minneapolis, mn: Ipums.}
+\newblock
+\APACrefnote{data retrieved from: IPUMS USA,
+  \url{https://doi.org/10.18128/D010.V11.0}}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Salomonsen-Sautel%
+, Min%
+, Sakai%
+, Thurstone%
+\BCBL {}\ \BBA {} Hopfer%
+}{%
+Salomonsen-Sautel%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2014}}%
+}]{%
+Salomonsen-SautelStacy2014Tifm}
+\APACinsertmetastar {%
+Salomonsen-SautelStacy2014Tifm}%
+\begin{APACrefauthors}%
+Salomonsen-Sautel, S.%
+, Min, S\BHBI J.%
+, Sakai, J\BPBI T.%
+, Thurstone, C.%
+\BCBL {}\ \BBA {} Hopfer, C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2014}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Trends in fatal motor vehicle crashes before and after
+  marijuana commercialization in Colorado} {Trends in fatal motor vehicle
+  crashes before and after marijuana commercialization in colorado}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Drug and alcohol dependence}{140}{}{137-144}.
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}

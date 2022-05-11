@@ -14,6 +14,7 @@
 \usepackage{geometry}
 \usepackage{pdflscape}
 \usepackage{parskip}
+
 \doublespacing
 \geometry{margin=1.5in}
 
@@ -24,9 +25,11 @@
 \hypersetup{
 	colorlinks = true,
 	linkcolor = black,
-	urlcolor=blue
+	urlcolor=blue,
+	citecolor = black
 }
-
+\usepackage{apacite}
+\usepackage{natbib}
 \author{Patrick Massey and Elliott Metzler}
 \title{Causal Recreational Cannabis}
 \date{5/13/2022}
@@ -36,7 +39,7 @@
 
 \begin{abstract}
 
-Can legalizing the recreational use of cannabis reduce rates of drug poisoning deaths? This paper seeks to study the relationship between changes in state-level policy toward recreational cannabis use and drug poisoning death rates. Specifically, we evaluate the impact of such policy change on the first state to legalize, Colorado. We implement a synthetic control design in which we use demographic data for each state in the United States, including Washington D.C., and estimate the causal impact of Colorado's legalization policy shift in 2012. We find a significant decline in drug poisoning death rate between from around 3.8 to 10.9 [[deaths per 100,000]] depending on when measuring after treatment.
+Can legalizing the recreational use of cannabis reduce rates of drug poisoning deaths? This paper seeks to study the relationship between changes in state-level policy toward recreational cannabis use and drug poisoning death rates. Specifically, we evaluate the impact of such policy change on the first state to legalize, Colorado. We implement a synthetic control design in which we use demographic data for each state in the United States, including Washington D.C., and estimate the causal impact of Colorado's legalization policy shift in 2012. We find a significant decline in drug poisoning death rate between from around 3.8 to 10.9 [[Could we calculate an average?]] [[deaths per 100,000]] depending on when measuring after treatment.
 
 \end{abstract}
 
@@ -50,9 +53,9 @@ For twenty years cannabis remained totally and completely illegal in the US, how
 
 \input{../tables/rollout.tex}
 
-The studies on the implications of legalization are mixed which is a natural outcome of a topic that impacts many aspects of our lives, directly or indirectly. In a study published by Stacy Salomonsen-Sautel et. al. the authors analyze the effect of legalization of medical cannabis on fatal motor vehicle crashes in Colorado. In their results they find that a significant positive change in drivers testing positive for cannabis in fatal vehicle crashes after the law changed. In contrast however, Livingston et. al. examine the effects of recreational legalization on the number of opioid-related deaths. Livingston et. al. find that after legalization there was a significant decrease in the number of opioid-related deaths per month. In this study we seek to expand on the analysis done by Livingston et. al., and to add to the discussion of legalization.
+The studies on the implications of legalization are mixed which is a natural outcome of a topic that impacts many aspects of our lives, directly or indirectly. In a study published by \citet{Salomonsen-SautelStacy2014Tifm} the authors analyze the effect of legalization of medical cannabis on fatal motor vehicle crashes in Colorado. In their results they find that a significant positive change in drivers testing positive for cannabis in fatal vehicle crashes after the law changed. In contrast however, \citet{LivingstonMelvinD2017RCLa} examine the effects of recreational legalization on the number of opioid-related deaths. The authors find that after legalization there was a significant decrease in the number of opioid-related deaths per month. In this study we seek to expand on the analysis done by Livingston et. al., and to add to the discussion of legalization.
 
-We will be examining drug poisoning deaths across the US from 2000 to 2018. The Center for Disease Control (CDC) classifies a drug poisoning death as a drug-related death that is unintentional, a homicide, a suicide, or of unknown intent. From Figure \ref{fig:death_rates_trend} below we see that drug poisoning deaths have been on the with a large increase in recent years. We also note that we do not see the same trend with Colorado.
+We will be examining drug poisoning deaths across the US from 2000 to 2018. The Center for Disease Control (CDC) classifies a drug poisoning death as a drug-related death that is unintentional, a homicide, a suicide, or of unknown intent. From Figure \ref{fig:death_rates_trend} below we see that drug poisoning deaths have been on the rise with a large increase in recent years. We also note that we do not see the same trend with Colorado.
 
 \begin{figure}[H]
 	\begin{center}
@@ -66,13 +69,13 @@ This paper seeks to estimate the causal effect of cannabis legalization on drug 
 
 \section{Data}
 
-The data employed for this paper originates from two sources. First, we source data on drug poisoning deaths, population, and an estimate of the crude drug poisoning death rate from the United States Center for Disease Control (``CDC''). Second, we source state-level demographic data from IPUMS USA, which is a database harmonizing, organizing, and structuring data from various population surveys in the United States over time.
+The data employed for this paper originates from two sources. First, we source data on drug poisoning deaths, population, and an estimate of the crude drug poisoning death rate from the United States Center for Disease Control (``CDC'' \citep{cdc}. Second, we source state-level demographic data from IPUMS USA, which is a database harmonizing, organizing, and structuring data from various population surveys in the United States over time.\citep{ipums}
 
 The first data set contains summary statistics by state and by year from 1999 to 2018. For each state in each year, the data reports the number of deaths due to drug poisoning, the population, and the ratio of the two previous variables as the crude death rate. Additionally, this data reports an estimate of the standard error for the crude death rate, and a lower and upper confidence interval around the point estimate. In addition to these base estimates, the data originally includes age-adjusted rates with standard errors and confidence intervals and the United State-wide crude death rate and United State-wide age-adjusted death rate. 
 
 From this data set, we focus on the crude death rate for the state and extract this variable along with the state and year variables for data merging purposes. We focus our attention on the crude death rate statistic for a couple of important reasons. First, using the death rate as opposed to the total number of deaths allows us to immediately control for differences in state population when estimating our model. Second, we exclude the age-adjusted rate because our model also accounts for age demographics explicitly as covariates, so it would be inappropriate to use this as our outcome variable of interest.
 
-The second data set contains nearly 28 million entries where each entry represents a person included in [[a survey]] in a particular year.  Importantly, this data includes the year and state in which that entry resided along with extensive demographic data. Thus, we are able to use the groups of these entries associated with each year and each state and calculate demographic summary information representative of each year in each state. We include in our demographic summaries the proportion of the population that is listed as male as compared to female [[should footnote simplicity of coding here ( I don't remember seeing info about non-binary or choose not to identify)]], a summary of a few significant age buckets, proportions of the population based on race, on marital status, on education, and on employment status. Additionally, we summarize the mean number of hours worked, the median income, the mean number of children, and the mean number of children under 5 years old. We present the mean and standard deviation of each of these demographic variables in Table \ref{tab:var_summary}.
+The second data set contains nearly 28 million entries where each entry represents a person included in the American Community Survey in a particular year.  Importantly, this data includes the year and state in which that entry resided along with extensive demographic data. Thus, we are able to use the groups of these entries associated with each year and each state and calculate demographic summary information representative of each year in each state. We include in our demographic summaries the proportion of the population that is listed as male as compared to female [[should footnote simplicity of coding here ( I don't remember seeing info about non-binary or choose not to identify)]], a summary of a few significant age buckets, proportions of the population based on race, on marital status, on education, and on employment status. Additionally, we summarize the mean number of hours worked, the median income, the mean number of children, and the mean number of children under 5 years old. We present the mean and standard deviation of each of these demographic variables in Table \ref{tab:var_summary}.
 
 To construct our final data set for use in analysis, we combine the two data sources. Since we have summarized the latter data set at the state and year level and the first data set is already at this level, we merge on the state and year. Thus, we have data for each state, inclusive of Washington D.C., for each year between 2000 and 2018 with data on deaths associated with drug poisoning, population, crude death rate, and all of our descriptive demographics data.
 
@@ -80,9 +83,9 @@ To construct our final data set for use in analysis, we combine the two data sou
 
 \section{Methodology}
 
-We utilize the synthetic control method first developed by Abadie and Gardeazabal (2003) and then expanded upon in Abadie et. al (2010)(2015). Similar to Abadie et. al (2010) we are analyzing the impact of a government policy shock. In this analysis we are estimating the impact of Colorado's legalization of recreation cannabis in 2012. For our synthetic control, Colorado is the treatment state of interest, and we have a donor pool of 41[Need to double check that's correct] states. The synthetic control method [MORE INFO HERE]
+We utilize the synthetic control method first developed by \citet{AbadieA2003TECo} and then expanded upon in \citet{AbadieAlberto2010SCMf} and \citet{AbadieAlberto2015CPat}. Similar to \citet{AbadieAlberto2010SCMf} we are analyzing the impact of a government policy shock. In this analysis we are estimating the impact of Colorado's legalization of recreational cannabis in 2012. For our synthetic control, Colorado is the treatment state of interest, and we have a donor pool of 42 states. In order to create our donor pool of states we remove any states that also experienced a legalization shock during our study period.
 
-Suppose that we have $1,2...S+1$ states and let $s = 1$ be the treated state, additionally we have $t = 1,2...T$ time periods where $T_0$ represents the number of pretreatment periods, and $T_0 + 1...T$ are the posttreatment periods. With that let $Y_{st}$ be the crude death rate for state $s$ at time $t$. In a posttreatment time line we are estimating
+Suppose that we have $1,2...S+1$ states and let $s = 1$ be the treated state, additionally we have $t = 1,2...T$ time periods where $T_0$ represents the number of pre-treatment periods, and $T_0 + 1...T$ are the post-treatment periods. With that let $Y_{st}$ be the crude death rate for state $s$ at time $t$. In a post-treatment time line we are estimating
 \begin{equation*}
 \hat{\alpha} = Y_{1t} - \sum_{s=2}^{S+1}w^{*}Y_{st}
 \end{equation*}
@@ -92,7 +95,7 @@ $w^{*}_s$ is a vector of optimally chosen weights for states from our donor pool
 \end{equation*}
 $X_1$ is a $(K \times 1)$ vector of state population variables and $X_0$ is a $(K \times S)$ matrix of state population variables for $S$ donor states. Note that $w_s \geq 0$ and $\sum w_s = 1$.
 
-We utilize the weights generated to create a synthetic Colorado, where we examine the counterfactual of a Colorado that never legalized recreational cannabis. Additionally we follow Abadie (2010) and use their placebo technique as a robustness check. The placebo technique consists of assigning each state in our donor pool as the treated state and then creating an optimal $w^{*}_s$, from the other donor states as well as the treated state, in the pretreatment period. Utilizing the weights we calculate the posttreatment root mean squared prediction error (RMSPE) for each state. We then take a ratio between the post/pretreatment RMSPE for each state. We expect this value to be high for our treated state, which would suggest that the posttreatment RMSPE is large due to the differences between the synthetic and the observed Colorado.
+We utilize the weights generated on states in the donor pool to create a synthetic Colorado. The synthetic Colorado is one where we examine the counterfactual of a Colorado that never legalized recreational cannabis. Additionally we follow \citet{AbadieAlberto2010SCMf} and use their placebo technique as a robustness check. The placebo technique consists of assigning each state in our donor pool as the treated state and then creating an optimal $w^{*}_s$, from the other donor states as well as the treated state, in the pre-treatment period. Utilizing the weights we calculate the post-treatment root mean squared prediction error (RMSPE) for each state. We then take a ratio between the post and pre-treatment RMSPE for each state. We expect this value to be high for our treated state, which would suggest that the post-treatment RMSPE is large due to the differences between the synthetic and the observed Colorado.
 
 \section{Results}
 
@@ -134,17 +137,17 @@ Finally, we present the numerical results associated with Figure \ref{fig:diffs_
 
 \subsection{Robustness Checks}
 
-In Figure \ref{fig:mspe_plot_colorado} below we plot the ratio between the post-treatment MSPE and the pre-treatment MSPE. What we expect to see is that the treated unit will have a small pre-treatment MSPE which would indicate a close fit between the observed and synthetic units in the pre-treatment period. We would also expect to see the post-treatment MSPE to be large as that would indicate a separation between the observed and synthetic units. We see that generally holds in the figure below, with Colorado standing well differentiated from each other state with the exception of New Hampshire. [[Need to explain New Hampshire - I think we ought to ask Cunningham. I don't know how to explain this]]
+In Figure \ref{fig:mspe_plot_colorado} below we plot the ratio between the post-treatment RMSPE and the pre-treatment MSPE. What we expect to see is that the treated unit will have a small pre-treatment RMSPE which would indicate a close fit between the observed and synthetic units in the pre-treatment period. We would also expect to see the post-treatment RMSPE to be large as that would indicate a separation between the observed and synthetic units. We see that generally holds in the figure below, with Colorado standing well differentiated from each other state with the exception of New Hampshire. This is still a strong indication, if a state were picked at random from our sample, the probability of picking a state with a ratio as large as Colorado would be 2/43 $\approx$ .047.
 
 \begin{figure}[H]
 	\begin{center}
 		\includegraphics[width=0.85\textwidth]{mspe_plot_colorado}
 	\end{center}
-	\caption{Mean Squared Prediction Error Ratio Plot - Colorado}
+	\caption{Root Mean Squared Prediction Error Ratio Plot - Colorado}
 	\label{fig:mspe_plot_colorado}
 \end{figure}
 
-As a robustness check we perform the placebo test as suggested by Abadie et al. (2010). When performing the placebo, we reassign the treatment to each state in the donor pool while placing Colorado into the donor pool. We then run synthetic control on all the donor states and plot their outcomes in Figure \ref{fig:placebos_plot_colorado} below.
+As a robustness check we perform the placebo test as suggested by \citet{AbadieAlberto2010SCMf}. When performing the placebo, we reassign the treatment to each state in the donor pool while placing Colorado into the donor pool. We then run synthetic control on all the donor states and plot their outcomes in Figure \ref{fig:placebos_plot_colorado} below.
 
 \begin{figure}[H]
 	\begin{center}
@@ -154,7 +157,7 @@ As a robustness check we perform the placebo test as suggested by Abadie et al. 
 	\label{fig:placebos_plot_colorado}
 \end{figure}
 
-To ensure we are comparing our result for Colorado with comparably fit placebos, we only chart and assess placebos for which their pretreatment period RMSPE is less than or equal to double the Colorado pretreatment period RMSPE. This is because we are interested in assessing models where the fit is relatively good in the pretreatment period, not those that we were not able to fit in the pretreatment period. As shown in the figure above, the placebo test confirms the strength of our results, with only one placebo falling below Colorado.  Montana ... [[Explain why?]]
+To ensure we are comparing our result for Colorado with comparably fit placebos, we only chart and assess placebos for which their pretreatment period RMSPE is less than or equal to double the Colorado pre-treatment period RMSPE. This is because we are interested in assessing models where the fit is relatively good in the pre-treatment period, not those that we were not able to fit in the pre-treatment period. As shown in the figure above, the placebo test confirms the strength of our results, with only one placebo falling below Colorado.  Montana ... [[Explain why?]]
 
 For our final robustness check, we apply the same methodology described here and above to another state, Washington, that legalized marijuana at the same time as Colorado (2012). We present detailed results of this analysis in the appendix. When applying our synthetic control model to Washington, we find similarly statistically significant results, albeit with less sizable estimated causal effects. We estimate a decline in crude death rate of 2.3 two years removed from treatment, 6.4 four years after treatment, and 6.4 again six years after treatment.
 
@@ -164,9 +167,11 @@ Our findings in this paper strongly support the notion that legalization of mari
 
 We recognize that an interesting limit on the general applicability of our results is the heterogeneity of states and regions in the United States, and that broadly applying a legalization policy may not have identical positive effects. State and regional preferences, attitudes, and political leanings often impact how these sort of policies are received and can drastically change usage outcomes. It is worth noting that Colorado and Washington both are historically known as states that are more friendly and curious regarding recreational use of drugs, which may skew results relative to a generally applied law. Nonetheless, our finding is logically supported by accessibility-driven decision making. Naturally, if something is more accessible, we're likely to reach for that instead as long as we view it as a viable substitute. If recreational marijuana is available and accessible, perhaps fewer people are going to the trouble of finding a black market drug supplier and acquiring harder, riskier drugs. Furthermore, the risk of death from overdosing on marijuana is nearly nonexistent, particularly when compared to other psychoactive drugs.
 
-Additionally, we recognize that our findings carry some important limitations. One key limitation is in our data. We are only able to use data at the state and year level, reducing some of the granularity in our results. Furthermore, we are limited primarily to demographic data for this study, which  is limiting our the ability to fit our model. Though matching a synthetic state based on broad demographics is a good start, we would ideally expand our model predictors to provide more of a rich feature set. Ultimately, we are estimating drug poisoning death rate, so additional data relating to this outcome would be very useful in producing a richer and more accurate model. Another limitation is in the number of years of data we have to study. Though we have many years in the pretreatment period, we only have six years after treatment to assess impact. Ideally, we would have more years in the post-treatment period.
+Additionally, we recognize that our findings carry some important limitations. One key limitation is in our data. We are only able to use data at the state and year level, reducing some of the granularity in our results. Furthermore, we are limited primarily to demographic data for this study, which  is limiting our the ability to fit our model. Though matching a synthetic state based on broad demographics is a good start, we would ideally expand our model predictors to provide more of a rich feature set. Ultimately, we are estimating drug poisoning death rate, so additional data relating to this outcome would be very useful in producing a richer and more accurate model. Another limitation is in the number of years of data we have to study. Though we have many years in the pre-treatment period, we only have six years after treatment to assess impact. Ideally, we would have more years in the post-treatment period.
 
-[[Patrick to write a paragraph here explaining the extensive method where you combine differential timing and synthetic control]]
+In this paper we have isolated Colorado and looked at the impact that the legalization of recreational cannabis had on the crude death rate for drug poisoning deaths. We reaffirmed our findings by performing a separate synthetic control on Washington which legalized recreational cannabis at the same time. However, as we stated earlier there have been many states that have legalized at various times. However in \citet{aug-synth}, the authors present a unique version of synthetic control they call "Augmented Synthetic Control". In the synthetic control method we utilized we are limited to exploring a single treated unit, this is not the case with the augmented synthetic control. With augmented synthetic control one could get the causal effect with multiple treated units even if there is staggered adoption as we have in this case. A useful extension would be to apply the augmented synthetic control method and estimate the causal impacts of legalization with all of the treated states.
+
+\newpage
 
 \section{Appendix - Robustness check with Washington}
 
@@ -176,7 +181,7 @@ First, we present the donor unit weights for the Synthetic Washington in Table \
 
 We see that Synthetic Washington is comprised of seven donor states with more than 0.1 percent contribution. Three donor states stand out with over 20 percent contribution: Florida, Utah, and Connecticut. Additionally, we see three of the key states overlap with donor states for Synthetic Colorado: Arizona, Washington D.C. (District of Columbia), and Utah. Though New Hampshire carries the second largest weight for Synthetic Colorado, it is absent from the key donors list for Washington.
 
-Next, we present the analogous balance table as \ref{tab:balance_table_washington}. [[Insert something else here]]
+Next, we present the analogous balance table below in Table \ref{tab:balance_table_washington}. In the balance table we see similar results that we saw in the Colorado analysis. The synthetic Washington results in a much closer fit to the observed Washington, than our donor sample. In fact our synthetic Washington matches the observed Washington better than the synthetic and observed Colorado. 
 
 \input{../tables/balance_table_washington.tex}
 
@@ -223,7 +228,9 @@ We note that in the plot of differences between actual and synthetic for the pla
 	\caption{Placebo Analysis Plot - Washington}
 	\label{fig:placebos_plot_washington}
 \end{figure}
-
+\newpage
+\bibliography{bib.bib}
+\bibliographystyle{apacite}
 
 \end{document}
 
