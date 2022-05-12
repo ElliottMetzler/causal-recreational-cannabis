@@ -20,9 +20,11 @@ plot <- read_csv(here("data", "raw",
   geom_line(aes(x = year, y = value, color = type),
             size = 1) +
   labs(x = "Year",
-       y = "Crude Death Rate",
+       y = "Drug Poisoning Death Rate",
        color = "") +
-  scale_color_discrete(labels = c("Colorado Death Rate", "U.S. Average Crude Death Rate")) +
+  scale_color_discrete(labels = c("Colorado", "U.S. Average")) +
   theme_minimal()
 
-ggsave(here("figures/death_rates_trend.jpg"),plot)
+ggsave(here("figures/death_rates_trend.jpg"),
+       plot,
+       width = 8, height = 6, units = "in")
