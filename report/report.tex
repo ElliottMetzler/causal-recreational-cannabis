@@ -41,7 +41,7 @@ Evidence From a Synthetic Control Analysis}
 
 \begin{abstract}
 
-Can legalizing the recreational use of cannabis reduce rates of drug poisoning deaths? This paper seeks to study the relationship between changes in state-level policy toward recreational cannabis use and drug poisoning death rates. Specifically, we evaluate the impact of such policy change on the first state to legalize, Colorado. We implement a synthetic control design in which we use demographic data for each state in the United States, including Washington D.C., and estimate the causal impact of Colorado's legalization policy shift in 2012. We find a significant decline in drug poisoning death rate ranging from around 3.8 to 10.9 [[Could we calculate an average?]] deaths per 100,000 depending on when measuring after treatment.
+Can legalizing the recreational use of cannabis reduce rates of drug poisoning deaths? This paper seeks to study the relationship between changes in state-level policy toward recreational cannabis use and drug poisoning death rates. Specifically, we evaluate the impact of such policy change on the first state to legalize, Colorado. We implement a synthetic control design in which we use demographic data for each state in the United States, including Washington D.C., and estimate the causal impact of Colorado's legalization policy shift in 2012. We find a significant decline in drug poisoning death rate, with an average estimate of 7.5 fewer deaths per 100,000 in years following legalization.
 
 \end{abstract}
 
@@ -159,7 +159,7 @@ As a robustness check we perform the placebo test as suggested by \citet{AbadieA
 	\label{fig:placebos_plot_colorado}
 \end{figure}
 
-To ensure we are comparing our result for Colorado with comparably fit placebos, we only chart and assess placebos for which their pre-treatment period RMSPE is less than or equal to double the Colorado pre-treatment period RMSPE. This is because we are interested in assessing models where the fit is relatively good in the pre-treatment period, not those that we were not able to fit in the pre-treatment period. As shown in the figure above, the placebo test confirms the strength of our results, with only one placebo falling below Colorado. Similar to the RMSE ratio analysis, we find one state more extreme than Colorado in the post-treatment period of our placebo analysis. However, in this instance, the state is Montana. Nonetheless, finding Colorado squarely at the extreme range of outcomes confirms the significance of our analysis at a reasonable level.
+To ensure we are comparing our result for Colorado with comparably fit placebos, we only chart and assess placebos for which their pre-treatment period RMSPE is less than or equal to double the Colorado pre-treatment period RMSPE. This is because we are interested in assessing models where the fit is relatively good in the pre-treatment period, not those that we were not able to fit in the pre-treatment period. As shown in the figure above, the placebo test confirms the strength of our results, with only one placebo falling below Colorado. Similar to the RMSPE ratio analysis, we find one state more extreme than Colorado in the post-treatment period of our placebo analysis. However, in this instance, the state is Montana. Nonetheless, finding Colorado squarely at the extreme range of outcomes confirms the significance of our analysis at a reasonable level.
 
 For our final robustness check, we apply the same methodology described here and above to another state, Washington, that legalized recreational cannabis at the same time as Colorado (2012). We present detailed results of this analysis in the appendix. When applying our synthetic control model to Washington, we find similarly statistically significant results, albeit with less sizable estimated causal effects. We estimate a decline in crude death rate of 2.3 two years removed from treatment, 6.4 four years after treatment, and 6.4 again six years after treatment. 
 
@@ -172,8 +172,6 @@ We recognize that an interesting limit on the general applicability of our resul
 Additionally, we recognize that our findings carry some important limitations. One key limitation is in our data. We are only able to use data at the state and year level, reducing some of the granularity in our results. Furthermore, we are limited primarily to demographic data for this study, which  is limiting our the ability to fit our model. Though matching a synthetic state based on broad demographics is a good start, we would ideally expand our model predictors to provide more of a rich feature set. Ultimately, we are estimating drug poisoning death rate, so additional data relating to this outcome would be very useful in producing a richer and more accurate model. Another limitation is in the number of years of data we have to study. Though we have many years in the pre-treatment period, we only have six years after treatment to assess impact. Ideally, we would have more years in the post-treatment period.
 
 In this paper we have isolated Colorado and looked at the impact that the legalization of recreational cannabis had on the crude death rate for drug poisoning deaths. We reaffirmed our findings by performing a separate synthetic control on Washington which legalized recreational cannabis at the same time. However, as we stated earlier there have been many states that have legalized at various times. In \citet{aug-synth}, the authors present a unique version of synthetic control they call "Augmented Synthetic Control". In the synthetic control method we utilized we are limited to exploring a single treated unit, which is not the case with the augmented synthetic control. With augmented synthetic control one could estimate the causal effect with multiple treated units even if there is staggered adoption as we have in this case. A useful extension would be to apply the augmented synthetic control method and estimate the causal impacts of legalization with all of the treated states.
-
-[[Do we need one last closer paragraph]]?
 
 \newpage
 
@@ -209,17 +207,17 @@ This leveling off is further highlighted in the difference chart, where we see a
 	\label{fig:diffs_plot_washington}
 \end{figure}
 
-We summarize our ultimate causal estimates in \ref{tab:causal_est_table_washington}. We see that in the years following legalization we estimate a negative causal impact of treatment. Though the results for Washington are not as large in order of magnitude as Colorado, it is encouraging for our model that we estimate a similar results path and same signed outcomes.
+We summarize our ultimate causal estimates in Table \ref{tab:causal_est_table_washington}. We see that in the years following legalization we estimate a negative causal impact of treatment. Though the results for Washington are not as large in order of magnitude as Colorado, it is encouraging for our model that we estimate a similar results path and same signed outcomes.
 
 \input{../tables/causal_est_table_washington.tex}
 
-Finally, we present the analogous MSPE ratio plot and placebos plot for Washington. Unlike Colorado, Washington's ratio of post-treatment MSPE to pre-treatment MSPE stands well apart from the placebos. 
+Finally, we present the analogous RMSPE ratio plot and placebos plot for Washington. Unlike Colorado, Washington's ratio of post-treatment RMSPE to pre-treatment RMSPE stands well apart from the placebos. 
 
 \begin{figure}[H]
 	\begin{center}
 		\includegraphics[width=0.85\textwidth]{mspe_plot_washington}
 	\end{center}
-	\caption{Mean Squared Prediction Error Ratio Plot - Washington}
+	\caption{Root Mean Squared Prediction Error Ratio Plot - Washington}
 	\label{fig:mspe_plot_washington}
 \end{figure}
 

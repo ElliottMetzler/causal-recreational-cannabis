@@ -239,6 +239,22 @@ causal_est_table <- function(synth_model_object, state_of_interest) {
   
 }
 
+mean_causal_estimate <- function(synth_model_object, state_of_interest) {
+  val <- synth_model_object %>% 
+    grab_synthetic_control() %>% 
+    filter(time_unit > 2012) %>% 
+    mutate(diff = real_y - synth_y) %>% 
+    pull(diff) %>% 
+    mean() %>% 
+    round(2)
+  
+  print(paste0(state_of_interest," Mean Causal Estimate: ", val))
+}
+
+c %>% mean_causal_estimate("Colorado")
+w %>% mean_causal_estimate("Washington")
+  
+  
 # Overall runner function
 
 run_model_create_figures <- function(some_state) {
@@ -258,7 +274,9 @@ run_model_create_figures <- function(some_state) {
   
   # Causal Table
   causal_est_table(model_object, some_state)
-
+  
+  # Mean Estimates
+  mean_causal_estimate(model_object, some_state)
 }
 
   
